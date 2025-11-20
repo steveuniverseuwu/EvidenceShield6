@@ -1,0 +1,18 @@
+{
+  "deno.enable": false,
+  "deno.enablePaths": [
+    "src/supabase/functions"
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.validate.enable": true,
+  "[typescript]": {
+    "editor.formatOnSave": true
+  },
+  "[typescriptreact]": {
+    "editor.formatOnSave": true
+  },
+  "files.associations": {
+    "src/supabase/functions/**/*.tsx": "typescript"
+  },
+  "typescript.preferences.importModuleSpecifier": "relative"
+}
