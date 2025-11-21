@@ -2,7 +2,7 @@
 
 ## Overview
 
-EvidenceShield now includes **automatic Zero-Knowledge Proof (ZKP) generation** for all uploaded evidence files. This provides cryptographic proof of file integrity without revealing the actual file content.
+ChainGuard now includes **automatic Zero-Knowledge Proof (ZKP) generation** for all uploaded evidence files. This provides cryptographic proof of file integrity without revealing the actual file content.
 
 ## ✅ What's Implemented
 

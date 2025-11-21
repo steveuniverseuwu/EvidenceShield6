@@ -2,7 +2,7 @@
 
 ## Overview
 
-The EvidenceShield project has been successfully consolidated from a confusing dual-directory structure into a clean, single-configuration setup. This guide helps you understand what changed and how to use the new structure.
+The ChainGuard project has been successfully consolidated from a confusing dual-directory structure into a clean, single-configuration setup. This guide helps you understand what changed and how to use the new structure.
 
 ## ⚠️ Important: What Changed
 

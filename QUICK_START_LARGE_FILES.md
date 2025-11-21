@@ -2,7 +2,7 @@
 
 ## TL;DR
 
-**EvidenceShield now supports unlimited file sizes!** Files over 50MB automatically use chunked upload.
+**ChainGuard now supports unlimited file sizes!** Files over 50MB automatically use chunked upload.
 
 ## How to Use
 

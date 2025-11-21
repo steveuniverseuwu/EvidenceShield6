@@ -358,7 +358,7 @@ zkp_file_file_{id}    → ZKP proof data (proofId, hash)
 
 ## 🎊 Congratulations!
 
-Your **EvidenceShield** application is now complete with:
+Your **ChainGuard** application is now complete with:
 - State-of-the-art encryption
 - User-friendly interface
 - Comprehensive security features

@@ -5,7 +5,7 @@
 ### Warning 1: MODULE_TYPELESS_PACKAGE_JSON
 ```
 (node:25772) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of 
-file:///C:/Users/USER/Downloads/EvidenceShield/postcss.config.js?t=1763271506314 
+file:///C:/Users/USER/Downloads/ChainGuard/postcss.config.js?t=1763271506314 
 is not specified and it doesn't parse as CommonJS.
 Reparsing as ES module because module syntax was detected. 
 This incurs a performance overhead.
@@ -41,7 +41,7 @@ warn - https://tailwindcss.com/docs/content-configuration#pattern-recommendation
 **Before:**
 ```json
 {
-  "name": "EvidenceShield",
+  "name": "ChainGuard",
   "version": "0.1.0",
   "private": true,
   ...
@@ -51,7 +51,7 @@ warn - https://tailwindcss.com/docs/content-configuration#pattern-recommendation
 **After:**
 ```json
 {
-  "name": "EvidenceShield",
+  "name": "ChainGuard",
   "version": "0.1.0",
   "type": "module",  ← Added this line
   "private": true,

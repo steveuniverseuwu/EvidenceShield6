@@ -8,7 +8,7 @@ Zero-Knowledge Proof allows you to **prove a file hasn't been tampered with** wi
 
 ### How to Upload Evidence with ZKP
 
-1. **Login** to EvidenceShield
+1. **Login** to ChainGuard
 2. Click **"Upload Evidence"** in the sidebar
 3. Fill in the form:
    - Case Number (e.g., CASE-2025-001)

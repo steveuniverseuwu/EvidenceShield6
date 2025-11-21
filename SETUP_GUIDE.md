@@ -1,4 +1,4 @@
-# 🚀 Setup Guide - EvidenceShield
+# 🚀 Setup Guide - ChainGuard
 
 This guide will help you set up the project after cloning from GitHub.
 

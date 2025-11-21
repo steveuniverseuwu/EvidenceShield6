@@ -262,7 +262,7 @@ If you still have issues after deploying:
 
 4. **Test Health Endpoint**
    - Visit: https://qvxkthmxqsawrdaxukii.supabase.co/functions/v1/make-server-af0976da/health
-   - Should return: `{"status":"ok","message":"EvidenceShield server running - unlimited file size support"}`
+   - Should return: `{"status":"ok","message":"ChainGuard server running - unlimited file size support"}`
 
 ---
 

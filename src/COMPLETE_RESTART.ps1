@@ -1,7 +1,7 @@
-# EvidenceShield - Complete Restart Script
+# ChainGuard - Complete Restart Script
 # This clears ALL caches and reinstalls everything fresh
 
-Write-Host "🛡️  EvidenceShield - Complete Restart" -ForegroundColor Cyan
+Write-Host "🛡️  ChainGuard - Complete Restart" -ForegroundColor Cyan
 Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Cyan
 Write-Host ""
 

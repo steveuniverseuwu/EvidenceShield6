@@ -1,5 +1,5 @@
 /**
- * EvidenceShield Backend - Deno Edge Function
+ * ChainGuard Backend - Deno Edge Function
  *
  * This file uses Deno-specific import syntax:
  * - npm: prefix for npm packages (e.g., npm:hono)
@@ -598,6 +598,73 @@ app.get("/make-server-af0976da/download-file/:fileId", async (c: any) => {
   }
 });
 
+// Track download event for audit trail
+app.post("/make-server-af0976da/track-download", async (c: any) => {
+  try {
+    const body = await c.req.json();
+    const {
+      fileId,
+      fileName,
+      caseNumber,
+      downloadedBy,
+      downloaderName,
+      downloaderRole,
+    } = body;
+
+    if (!fileId || !downloadedBy) {
+      return c.json({ error: "Missing required fields" }, 400);
+    }
+
+    console.log("📥 Tracking download event for file:", fileName);
+
+    // Get file metadata to get original TX hash
+    const fileData = await kv.get(`evidence:${fileId}`);
+    
+    // Generate new blockchain transaction for download action
+    const downloadTxHash = generateTxHash();
+    
+    console.log("📝 Generated new blockchain TX for download:", downloadTxHash);
+    console.log("   Original upload TX:", fileData?.txHash || "N/A");
+    console.log("   File:", fileName);
+    console.log("   Downloaded by:", downloaderName, `(${downloaderRole})`);
+
+    // Create audit entry for download
+    const auditEntry = {
+      id: `audit_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`,
+      fileId,
+      fileName: fileName || "Unknown",
+      caseNumber: caseNumber || "N/A",
+      action: "download",
+      performedBy: downloadedBy,
+      performerName: downloaderName || "Unknown",
+      performerRole: downloaderRole || "Unknown",
+      timestamp: new Date().toISOString(),
+      txHash: downloadTxHash, // New transaction hash for this download
+      originalTxHash: fileData?.txHash, // Reference to original upload TX
+      details: `File downloaded: ${fileName || "Unknown"}`,
+      ipAddress: "127.0.0.1",
+    };
+
+    await kv.set(`audit:${auditEntry.id}`, auditEntry);
+    await kv.set(`file_audit:${fileId}:${auditEntry.id}`, auditEntry);
+
+    console.log("✅ Download event tracked successfully");
+
+    return c.json({
+      success: true,
+      message: "Download tracked successfully",
+      txHash: downloadTxHash,
+    });
+  } catch (error: any) {
+    console.error("❌ Error tracking download:", error);
+    // Don't fail the download if tracking fails
+    return c.json({ 
+      success: false, 
+      error: error.message 
+    }, 200); // Return 200 so download still works
+  }
+});
+
 // Get user evidence (alias for backwards compatibility)
 app.get("/make-server-af0976da/user-evidence/:email", async (c: any) => {
   try {
@@ -711,7 +778,13 @@ app.get("/make-server-af0976da/get-audit-trail", async (c: any) => {
     
     // Filter by event type
     if (filter !== "all") {
-      audits = audits.filter((audit: any) => audit.action === filter || audit.eventType === filter);
+      audits = audits.filter((audit: any) => {
+        // Handle "upload" filter matching "uploaded" action
+        if (filter === "upload" && audit.action === "uploaded") {
+          return true;
+        }
+        return audit.action === filter || audit.eventType === filter;
+      });
     }
     
     // Sort by timestamp (newest first)
@@ -750,7 +823,7 @@ app.get("/make-server-af0976da/get-audit-trail", async (c: any) => {
   }
 });
 
-// Share evidence
+// Share evidence (single file)
 app.post("/make-server-af0976da/share-evidence", async (c: any) => {
   try {
     const body = await c.req.json();
@@ -768,6 +841,14 @@ app.post("/make-server-af0976da/share-evidence", async (c: any) => {
       return c.json({ error: "File not found" }, 404);
     }
 
+    // Generate NEW blockchain transaction for this share action
+    const shareTxHash = generateTxHash();
+    console.log("📝 Generated new blockchain TX for share:", shareTxHash);
+    console.log("   Original upload TX:", fileData.txHash);
+    console.log("   File:", fileData.fileName);
+    console.log("   From:", sharerName, `(${sharerRole})`);
+    console.log("   To:", sharedWith);
+
     // Update shared with list
     const updatedFileData = {
       ...fileData,
@@ -784,7 +865,7 @@ app.post("/make-server-af0976da/share-evidence", async (c: any) => {
     // Also store reference for the shared user
     await kv.set(`user_evidence:${sharedWith}:${fileId}`, updatedFileData);
 
-    // Create audit entry
+    // Create audit entry with NEW transaction hash
     const auditEntry = {
       id: `audit_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`,
       fileId,
@@ -795,7 +876,8 @@ app.post("/make-server-af0976da/share-evidence", async (c: any) => {
       performerName: sharerName,
       performerRole: sharerRole,
       timestamp: new Date().toISOString(),
-      txHash: fileData.txHash,
+      txHash: shareTxHash, // ← NEW transaction hash for this share
+      originalTxHash: fileData.txHash, // ← Keep reference to original upload TX
       details: `File shared with: ${sharedWith}`,
       ipAddress: "127.0.0.1",
       sharedWith,
@@ -804,14 +886,107 @@ app.post("/make-server-af0976da/share-evidence", async (c: any) => {
     await kv.set(`audit:${auditEntry.id}`, auditEntry);
     await kv.set(`file_audit:${fileId}:${auditEntry.id}`, auditEntry);
 
-    console.log("✅ File shared successfully");
+    console.log("✅ File shared successfully with new blockchain transaction");
 
     return c.json({
       success: true,
       message: `File shared with ${sharedWith}`,
+      txHash: shareTxHash, // Return the new transaction hash
+      originalTxHash: fileData.txHash, // Also return original for reference
     });
   } catch (error: any) {
     console.error("❌ Share error:", error);
+    return c.json({ error: error.message }, 500);
+  }
+});
+
+// Batch share evidence (multiple files with ONE blockchain TX)
+app.post("/make-server-af0976da/share-batch-evidence", async (c: any) => {
+  try {
+    const body = await c.req.json();
+    const { fileIds, sharedWith, sharedBy, sharerName, sharerRole } = body;
+
+    if (!fileIds || fileIds.length === 0 || !sharedWith || !sharedBy) {
+      return c.json({ error: "Missing required fields" }, 400);
+    }
+
+    console.log("📦 Batch sharing", fileIds.length, "files with:", sharedWith);
+
+    // Fetch all file metadata
+    const files = [];
+    for (const fileId of fileIds) {
+      const fileData = await kv.get(`evidence:${fileId}`);
+      if (fileData) {
+        files.push({ id: fileId, ...fileData });
+      }
+    }
+
+    if (files.length === 0) {
+      return c.json({ error: "No valid files found" }, 404);
+    }
+
+    // Generate Merkle root for batch share (combines file hashes)
+    const fileHashes = files.map(f => f.fileHash || f.zkpFileHash);
+    const { root: merkleRoot } = buildMerkleTree(fileHashes);
+    
+    // Generate ONE blockchain transaction for the entire batch share
+    const batchShareTxHash = generateTxHash();
+    
+    console.log("📝 Generated new blockchain TX for batch share:", batchShareTxHash);
+    console.log("   Merkle root:", merkleRoot);
+    console.log("   Files:", files.length);
+    console.log("   From:", sharerName, `(${sharerRole})`);
+    console.log("   To:", sharedWith);
+
+    // Update each file's shared list and store references
+    for (const file of files) {
+      const updatedFileData = {
+        ...file,
+        sharedWith: [...(file.sharedWith || []), sharedWith],
+      };
+
+      // Update in all locations
+      await kv.set(`evidence:${file.id}`, updatedFileData);
+      await kv.set(`user_evidence:${file.uploadedBy}:${file.id}`, updatedFileData);
+      await kv.set(`user_evidence:${sharedWith}:${file.id}`, updatedFileData);
+    }
+
+    // Create ONE batch share audit entry
+    const batchAuditEntry = {
+      id: `audit_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`,
+      action: "batch_share",
+      performedBy: sharedBy,
+      performerName: sharerName,
+      performerRole: sharerRole,
+      timestamp: new Date().toISOString(),
+      txHash: batchShareTxHash, // ← NEW batch share transaction
+      merkleRoot: merkleRoot, // ← Merkle root of shared files
+      fileCount: files.length,
+      fileIds: fileIds,
+      caseNumber: files[0]?.caseNumber, // Use first file's case number
+      details: `Batch share: ${files.length} files with ${sharedWith}`,
+      ipAddress: "127.0.0.1",
+      sharedWith,
+    };
+
+    await kv.set(`audit:${batchAuditEntry.id}`, batchAuditEntry);
+
+    // Also create individual file audit references (for per-file audit lookup)
+    for (const fileId of fileIds) {
+      await kv.set(`file_audit:${fileId}:${batchAuditEntry.id}`, batchAuditEntry);
+    }
+
+    console.log("✅ Batch shared successfully with new blockchain transaction");
+
+    return c.json({
+      success: true,
+      message: `${files.length} files shared with ${sharedWith}`,
+      txHash: batchShareTxHash, // Return the new batch transaction hash
+      merkleRoot: merkleRoot,
+      fileCount: files.length,
+    });
+  } catch (error: any) {
+    console.error("❌ Batch share error:", error);
     return c.json({ error: error.message }, 500);
   }
 });
@@ -1226,7 +1401,7 @@ app.get(
 app.get("/make-server-af0976da/health", (c: any) => {
   return c.json({
     status: "ok",
-    message: "EvidenceShield server running - unlimited file size support",
+    message: "ChainGuard server running - unlimited file size support",
   });
 });
 
@@ -1262,7 +1437,7 @@ app.get("/make-server-af0976da/test-kv", async (c: any) => {
   }
 });
 
-console.log("🚀 EvidenceShield server starting...");
+console.log("🚀 ChainGuard server starting...");
 console.log("✅ Direct upload - unlimited file sizes supported");
 console.log("✅ Supabase Storage integration enabled");
 // @ts-ignore - Deno.serve is available in Deno runtime

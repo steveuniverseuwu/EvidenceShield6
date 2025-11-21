@@ -1,4 +1,4 @@
-# 🛡️ EvidenceShield
+# 🛡️ ChainGuard
 
 Blockchain-based evidence management system with role-based authentication and Web3 integration.
 

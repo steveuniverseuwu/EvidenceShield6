@@ -150,7 +150,7 @@ export function ShareEvidence({ currentUser }: ShareEvidenceProps) {
     if (searchQuery.trim() && caseNumbers.length > 0) {
       setOpenCases(new Set(caseNumbers));
     }
-  }, [searchQuery]);
+  }, [searchQuery, caseNumbers]);
 
   const handleShare = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -167,9 +167,12 @@ export function ShareEvidence({ currentUser }: ShareEvidenceProps) {
     setShareStatus({ type: null, message: "" });
 
     try {
-      // Share each selected file
-      const sharePromises = selectedFiles.map(fileId =>
-        fetch(
+      const fileCount = selectedFiles.length;
+      
+      // Use single-file endpoint for 1 file, batch endpoint for 2+ files
+      if (fileCount === 1) {
+        // Single file share - use original endpoint
+        const response = await fetch(
           `https://${projectId}.supabase.co/functions/v1/make-server-af0976da/share-evidence`,
           {
             method: "POST",
@@ -178,30 +181,58 @@ export function ShareEvidence({ currentUser }: ShareEvidenceProps) {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              fileId: fileId,
+              fileId: selectedFiles[0],
               sharedBy: currentUser.email,
               sharedWith: recipientEmail,
               sharerName: currentUser.name,
               sharerRole: currentUser.role,
             }),
           }
-        )
-      );
+        );
 
-      const responses = await Promise.all(sharePromises);
-      
-      // Check if all requests were successful
-      const failedShares = responses.filter(res => !res.ok);
-      
-      if (failedShares.length > 0) {
-        throw new Error(`Failed to share ${failedShares.length} file(s)`);
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to share file");
+        }
+
+        await response.json(); // Consume response
+        
+        setShareStatus({
+          type: "success",
+          message: `File shared successfully with ${recipientEmail}`,
+        });
+      } else {
+        // Multiple files - use batch endpoint (ONE blockchain transaction)
+        const response = await fetch(
+          `https://${projectId}.supabase.co/functions/v1/make-server-af0976da/share-batch-evidence`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${publicAnonKey}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              fileIds: selectedFiles,
+              sharedBy: currentUser.email,
+              sharedWith: recipientEmail,
+              sharerName: currentUser.name,
+              sharerRole: currentUser.role,
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to share files");
+        }
+
+        await response.json(); // Consume response
+        
+        setShareStatus({
+          type: "success",
+          message: `${fileCount} files shared successfully with ${recipientEmail} (Gas-optimized: 1 blockchain transaction)`,
+        });
       }
-
-      const fileCount = selectedFiles.length;
-      setShareStatus({
-        type: "success",
-        message: `${fileCount} file${fileCount > 1 ? 's' : ''} shared successfully with ${recipientEmail}`,
-      });
 
       // Reset form
       setSelectedFiles([]);
@@ -221,8 +252,8 @@ export function ShareEvidence({ currentUser }: ShareEvidenceProps) {
     return (
       <div className="p-6 flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 text-indigo-600 animate-spin mx-auto mb-4" />
-          <p className="text-indigo-600">Loading your files...</p>
+          <Loader2 className="w-12 h-12 text-blue-300 animate-spin mx-auto mb-4" />
+          <p className="text-blue-300">Loading your files...</p>
         </div>
       </div>
     );
@@ -231,14 +262,14 @@ export function ShareEvidence({ currentUser }: ShareEvidenceProps) {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm border border-indigo-200 rounded-xl p-4 shadow-sm">
+      <div className="bg-slate-900/80 backdrop-blur-xl border border-blue-500/30 shadow-lg shadow-blue-500/20 rounded-xl p-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center flex-shrink-0 shadow-md">
+          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/50">
             <Share2 className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h2 className="text-indigo-900">Share Evidence</h2>
-            <p className="text-indigo-600 text-sm">
+            <h2 className="text-blue-100">Share Evidence</h2>
+            <p className="text-blue-300 text-sm">
               {currentUser.role === "Police Officer"
                 ? "Share evidence files with Forensics Specialists"
                 : "Share evidence files with Prosecutors"}
@@ -248,12 +279,12 @@ export function ShareEvidence({ currentUser }: ShareEvidenceProps) {
       </div>
 
       {/* Share Form */}
-      <div className="bg-white/80 backdrop-blur-sm border border-indigo-200 rounded-xl p-6 shadow-sm">
+      <div className="bg-slate-900/80 backdrop-blur-xl border border-blue-500/30 shadow-lg shadow-blue-500/20 rounded-xl p-6">
         {myFiles.length === 0 ? (
           <div className="text-center py-12">
-            <AlertCircle className="w-16 h-16 text-indigo-300 mx-auto mb-4" />
-            <h3 className="text-indigo-900 mb-2">No Files to Share</h3>
-            <p className="text-indigo-600">
+            <AlertCircle className="w-16 h-16 text-blue-400 mx-auto mb-4" />
+            <h3 className="text-blue-100 mb-2">No Files to Share</h3>
+            <p className="text-blue-300">
               You need to upload evidence files before you can share them.
             </p>
           </div>
@@ -262,13 +293,13 @@ export function ShareEvidence({ currentUser }: ShareEvidenceProps) {
             {/* Select Files */}
             <div>
               <div className="flex items-center justify-between mb-3">
-                <label className="block text-indigo-900">
+                <label className="block text-blue-100">
                   Select Evidence Files <span className="text-red-500">*</span>
                 </label>
                 <button
                   type="button"
                   onClick={toggleSelectAll}
-                  className="text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                  className="text-sm text-blue-300 hover:text-blue-200 font-medium"
                   disabled={sharing}
                 >
                   {selectedFiles.length === myFiles.length ? "Deselect All" : "Select All"}
@@ -278,37 +309,37 @@ export function ShareEvidence({ currentUser }: ShareEvidenceProps) {
               {/* Search Bar */}
               <div className="mb-3">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-indigo-400" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-blue-400" />
                   <input
                     type="text"
                     placeholder="Search by file name, case number, or description..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     disabled={sharing}
-                    className="w-full pl-9 pr-9 py-2 border border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-indigo-900 placeholder-indigo-400 text-sm disabled:bg-indigo-50 disabled:cursor-not-allowed"
+                    className="w-full pl-9 pr-9 py-2 bg-slate-800/60 border border-blue-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-blue-100 placeholder-indigo-400 text-sm disabled:bg-blue-900/40 disabled:cursor-not-allowed"
                   />
                   {searchQuery && (
                     <button
                       onClick={() => setSearchQuery("")}
                       disabled={sharing}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-indigo-400 hover:text-indigo-600 transition-colors disabled:cursor-not-allowed"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-400 hover:text-blue-300 transition-colors disabled:cursor-not-allowed"
                     >
                       <X className="w-4 h-4" />
                     </button>
                   )}
                 </div>
                 {searchQuery && (
-                  <div className="mt-2 text-xs text-indigo-600">
+                  <div className="mt-2 text-xs text-blue-300">
                     Found {filteredFiles.length} file{filteredFiles.length !== 1 ? 's' : ''} in {caseNumbers.length} case{caseNumbers.length !== 1 ? 's' : ''}
                   </div>
                 )}
               </div>
 
-              <div className="border border-indigo-200 rounded-lg overflow-hidden max-h-[500px] overflow-y-auto">
+              <div className="bg-slate-800/60 border border-blue-500/30 rounded-lg overflow-hidden max-h-[500px] overflow-y-auto">
                 {filteredFiles.length === 0 ? (
                   <div className="p-8 text-center">
-                    <Search className="w-12 h-12 text-indigo-300 mx-auto mb-3" />
-                    <p className="text-indigo-600 text-sm">
+                    <Search className="w-12 h-12 text-blue-400 mx-auto mb-3" />
+                    <p className="text-blue-300 text-sm">
                       {searchQuery ? `No files match "${searchQuery}"` : "No files available"}
                     </p>
                   </div>
@@ -327,9 +358,9 @@ export function ShareEvidence({ currentUser }: ShareEvidenceProps) {
                         open={isOpen}
                         onOpenChange={() => toggleCase(caseNumber)}
                       >
-                        <div className="bg-white border border-indigo-200 rounded-lg overflow-hidden">
+                        <div className="bg-slate-800/60 border border-blue-500/30 rounded-lg overflow-hidden">
                           {/* Case Folder Header */}
-                          <div className="flex items-center gap-2 p-3 bg-indigo-50 hover:bg-indigo-100 transition-colors">
+                          <div className="flex items-center gap-2 p-3 bg-blue-900/40 hover:bg-blue-900/60 transition-colors">
                             <input
                               type="checkbox"
                               checked={allCaseFilesSelected}
@@ -341,38 +372,38 @@ export function ShareEvidence({ currentUser }: ShareEvidenceProps) {
                                 toggleSelectCase(caseNumber);
                               }}
                               disabled={sharing}
-                              className="w-4 h-4 text-indigo-600 border-indigo-300 rounded focus:ring-indigo-500"
+                              className="w-4 h-4 text-blue-300 border-blue-500/30 rounded focus:ring-blue-500"
                             />
                             <CollapsibleTrigger className="flex-1 flex items-center justify-between cursor-pointer">
                               <div className="flex items-center gap-2">
                                 {isOpen ? (
-                                  <FolderOpen className="w-5 h-5 text-indigo-600" />
+                                  <FolderOpen className="w-5 h-5 text-blue-300" />
                                 ) : (
-                                  <Folder className="w-5 h-5 text-indigo-600" />
+                                  <Folder className="w-5 h-5 text-blue-300" />
                                 )}
-                                <span className="text-indigo-900 font-semibold">
+                                <span className="text-blue-100 font-semibold">
                                   Case {caseNumber}
                                 </span>
-                                <span className="text-sm text-indigo-600">
+                                <span className="text-sm text-blue-300">
                                   ({caseFiles.length} file{caseFiles.length > 1 ? 's' : ''})
                                 </span>
                               </div>
                               {isOpen ? (
-                                <ChevronDown className="w-4 h-4 text-indigo-600" />
+                                <ChevronDown className="w-4 h-4 text-blue-300" />
                               ) : (
-                                <ChevronRight className="w-4 h-4 text-indigo-600" />
+                                <ChevronRight className="w-4 h-4 text-blue-300" />
                               )}
                             </CollapsibleTrigger>
                           </div>
 
                           {/* Case Files */}
                           <CollapsibleContent>
-                            <div className="border-t border-indigo-200">
+                            <div className="border-t border-blue-500/30">
                               {caseFiles.map((file) => (
                                 <label
                                   key={file.id}
-                                  className={`flex items-start gap-3 p-3 pl-8 hover:bg-indigo-50 cursor-pointer transition-colors border-b border-indigo-100 last:border-b-0 ${
-                                    selectedFiles.includes(file.id) ? 'bg-indigo-50' : 'bg-white'
+                                  className={`flex items-start gap-3 p-3 pl-8 hover:bg-blue-900/40 cursor-pointer transition-colors border-b border-blue-500/20 last:border-b-0 ${
+                                    selectedFiles.includes(file.id) ? 'bg-blue-900/40' : 'bg-slate-800/40'
                                   }`}
                                 >
                                   <input
@@ -380,14 +411,14 @@ export function ShareEvidence({ currentUser }: ShareEvidenceProps) {
                                     checked={selectedFiles.includes(file.id)}
                                     onChange={() => toggleFileSelection(file.id)}
                                     disabled={sharing}
-                                    className="mt-1 w-4 h-4 text-indigo-600 border-indigo-300 rounded focus:ring-indigo-500"
+                                    className="mt-1 w-4 h-4 text-blue-300 border-blue-500/30 rounded focus:ring-blue-500"
                                   />
                                   <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 mb-1">
-                                      <FileText className="w-4 h-4 text-indigo-600 flex-shrink-0" />
-                                      <span className="text-indigo-900 font-medium truncate">{file.fileName}</span>
+                                      <FileText className="w-4 h-4 text-blue-300 flex-shrink-0" />
+                                      <span className="text-blue-100 font-medium truncate">{file.fileName}</span>
                                     </div>
-                                    <div className="text-sm text-indigo-600">
+                                    <div className="text-sm text-blue-300">
                                       {new Date(file.timestamp).toLocaleDateString()}
                                     </div>
                                   </div>
@@ -403,7 +434,7 @@ export function ShareEvidence({ currentUser }: ShareEvidenceProps) {
                 )}
               </div>
               {selectedFiles.length > 0 && (
-                <div className="mt-2 text-sm text-indigo-600">
+                <div className="mt-2 text-sm text-blue-300">
                   {selectedFiles.length} file{selectedFiles.length > 1 ? 's' : ''} selected
                 </div>
               )}
@@ -411,18 +442,18 @@ export function ShareEvidence({ currentUser }: ShareEvidenceProps) {
 
             {/* Select Recipient */}
             <div>
-              <label className="block text-indigo-900 mb-2">
+              <label className="block text-blue-100 mb-2">
                 Share With <span className="text-red-500">*</span>
               </label>
               <select
                 value={recipientEmail}
                 onChange={(e) => setRecipientEmail(e.target.value)}
-                className="w-full px-4 py-3 border border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-4 py-3 bg-slate-800/60 border border-blue-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-blue-100 [&>option]:bg-slate-800 [&>option]:text-blue-100"
                 disabled={sharing}
               >
-                <option value="">Select recipient...</option>
+                <option value="" className="bg-slate-800 text-blue-100">Select recipient...</option>
                 {recipientOptions.map((option) => (
-                  <option key={option.email} value={option.email}>
+                  <option key={option.email} value={option.email} className="bg-slate-800 text-blue-100">
                     {option.name}
                   </option>
                 ))}
@@ -457,7 +488,7 @@ export function ShareEvidence({ currentUser }: ShareEvidenceProps) {
             <button
               type="submit"
               disabled={sharing}
-              className="w-full px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+              className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-lg shadow-blue-500/30 text-white rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {sharing ? (
                 <>

@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import { Activity, FileText, Share2, Upload, ExternalLink, Loader2, AlertCircle, CheckCircle, RefreshCw, Shield } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { Activity, FileText, Share2, Upload, ExternalLink, Loader2, AlertCircle, CheckCircle, RefreshCw, Shield, Search } from "lucide-react";
 import { User } from "../App";
 import { projectId, publicAnonKey } from "../utils/supabase/info";
 
 interface AuditEvent {
   id: string;
-  eventType: "upload" | "share" | "verify" | "download" | "batch_upload";
+  eventType: "upload" | "share" | "verify" | "download" | "batch_upload" | "batch_share";
   fileId?: string;
   fileName?: string;
   caseNumber: string;
@@ -29,14 +29,16 @@ interface AuditTrailProps {
 }
 
 export function AuditTrail({ currentUser }: AuditTrailProps) {
-  const [events, setEvents] = useState<AuditEvent[]>([]);
+  const [allEvents, setAllEvents] = useState<AuditEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [filter, setFilter] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
+  // Fetch all events only once on mount
   useEffect(() => {
     fetchAuditTrail();
-  }, [filter]);
+  }, []); // No dependencies - only fetch once
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -46,9 +48,10 @@ export function AuditTrail({ currentUser }: AuditTrailProps) {
 
   const fetchAuditTrail = async () => {
     try {
+      // Always fetch ALL events, filter on client side
       const url = currentUser.role === "Administrator"
-        ? `https://${projectId}.supabase.co/functions/v1/make-server-af0976da/get-audit-trail?filter=${filter}`
-        : `https://${projectId}.supabase.co/functions/v1/make-server-af0976da/get-audit-trail?userEmail=${currentUser.email}&filter=${filter}`;
+        ? `https://${projectId}.supabase.co/functions/v1/make-server-af0976da/get-audit-trail?filter=all`
+        : `https://${projectId}.supabase.co/functions/v1/make-server-af0976da/get-audit-trail?userEmail=${currentUser.email}&filter=all`;
 
       const response = await fetch(url, {
         headers: {
@@ -58,7 +61,7 @@ export function AuditTrail({ currentUser }: AuditTrailProps) {
 
       const data = await response.json();
       if (response.ok) {
-        setEvents(data.events || []);
+        setAllEvents(data.events || []);
       }
     } catch (error) {
       console.error("Error fetching audit trail:", error);
@@ -66,6 +69,47 @@ export function AuditTrail({ currentUser }: AuditTrailProps) {
       setLoading(false);
     }
   };
+
+  // Client-side filtering and searching - instant, no network calls
+  const events = useMemo(() => {
+    let filtered = allEvents;
+    
+    // Apply type filter
+    if (filter !== "all") {
+      // Handle special case for "upload" filter matching "uploaded" action
+      if (filter === "upload") {
+        filtered = filtered.filter(event => 
+          event.eventType === "upload" || 
+          (event as any).action === "uploaded"
+        );
+      } else if (filter === "tampered") {
+        // Filter for tampered/failed verifications
+        filtered = filtered.filter(event => 
+          event.eventType === "verify" && 
+          (event.zkpVerified === false || event.details?.toLowerCase().includes('failed') || event.details?.toLowerCase().includes('tampered'))
+        );
+      } else {
+        filtered = filtered.filter(event => event.eventType === filter);
+      }
+    }
+    
+    // Apply search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(event => 
+        event.fileName?.toLowerCase().includes(query) ||
+        event.caseNumber?.toLowerCase().includes(query) ||
+        event.performerName?.toLowerCase().includes(query) ||
+        event.performerRole?.toLowerCase().includes(query) ||
+        event.performedBy?.toLowerCase().includes(query) ||
+        event.details?.toLowerCase().includes(query) ||
+        event.txHash?.toLowerCase().includes(query) ||
+        event.merkleRoot?.toLowerCase().includes(query)
+      );
+    }
+    
+    return filtered;
+  }, [allEvents, filter, searchQuery]);
 
   const getEventIcon = (type: string, event?: AuditEvent) => {
     switch (type) {
@@ -75,6 +119,8 @@ export function AuditTrail({ currentUser }: AuditTrailProps) {
         return <Upload className="w-5 h-5 text-purple-600" />;
       case "share":
         return <Share2 className="w-5 h-5 text-purple-600" />;
+      case "batch_share":
+        return <Share2 className="w-5 h-5 text-purple-600" />;
       case "verify":
         // Show red X icon for failed verification, green check for success
         // Check for explicit false OR check details field for "failed"
@@ -83,7 +129,7 @@ export function AuditTrail({ currentUser }: AuditTrailProps) {
         }
         return <CheckCircle className="w-5 h-5 text-green-600" />;
       case "download":
-        return <FileText className="w-5 h-5 text-indigo-600" />;
+        return <FileText className="w-5 h-5 text-indigo-400" />;
       default:
         return <Activity className="w-5 h-5 text-gray-600" />;
     }
@@ -92,22 +138,24 @@ export function AuditTrail({ currentUser }: AuditTrailProps) {
   const getEventColor = (type: string, event?: AuditEvent) => {
     switch (type) {
       case "upload":
-        return "bg-blue-50 border-blue-200";
+        return "border-blue-500/30 bg-slate-900/60";
       case "batch_upload":
-        return "bg-purple-50 border-purple-200";
+        return "border-purple-500/30 bg-slate-900/60";
       case "share":
-        return "bg-purple-50 border-purple-200";
+        return "border-purple-500/30 bg-slate-900/60";
+      case "batch_share":
+        return "border-purple-500/30 bg-slate-900/60";
       case "verify":
         // Show red background for failed verification
         // Check for explicit false OR check details field for "failed"
         if (event && (event.zkpVerified === false || event.details?.toLowerCase().includes('failed'))) {
-          return "bg-red-50 border-red-200";
+          return "border-red-500/30 bg-red-950/40";
         }
-        return "bg-green-50 border-green-200";
+        return "border-green-500/30 bg-slate-900/60";
       case "download":
-        return "bg-indigo-50 border-indigo-200";
+        return "border-indigo-500/30 bg-slate-900/60";
       default:
-        return "bg-gray-50 border-gray-200";
+        return "border-blue-500/20 bg-slate-900/60";
     }
   };
 
@@ -123,6 +171,12 @@ export function AuditTrail({ currentUser }: AuditTrailProps) {
           return "Evidence Received";
         }
         return "Evidence Shared";
+      case "batch_share":
+        // Show different label if user is the recipient
+        if (event && event.details?.includes(`with ${currentUser.email}`)) {
+          return "Batch Evidence Received (Merkle Tree)";
+        }
+        return "Batch Evidence Shared (Merkle Tree)";
       case "verify":
         // Show different label based on verification result
         // Check for explicit false OR check details field for "failed"
@@ -141,8 +195,8 @@ export function AuditTrail({ currentUser }: AuditTrailProps) {
     return (
       <div className="p-6 flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 text-indigo-600 animate-spin mx-auto mb-4" />
-          <p className="text-indigo-600">Loading audit trail...</p>
+          <Loader2 className="w-12 h-12 text-blue-400 animate-spin mx-auto mb-4" />
+          <p className="text-blue-300">Loading audit trail...</p>
         </div>
       </div>
     );
@@ -151,15 +205,15 @@ export function AuditTrail({ currentUser }: AuditTrailProps) {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm border border-indigo-200 rounded-xl p-4 shadow-sm">
+      <div className="bg-slate-900/80 backdrop-blur-xl border border-blue-500/30 rounded-xl p-4 shadow-lg shadow-blue-500/20">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center flex-shrink-0 shadow-md">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/50">
               <Activity className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h2 className="text-indigo-900">Blockchain Audit Trail</h2>
-              <p className="text-indigo-600 text-sm">
+              <h2 className="text-blue-100 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]">Blockchain Audit Trail</h2>
+              <p className="text-blue-300 text-sm">
                 Immutable record of all evidence-related activities
               </p>
             </div>
@@ -168,37 +222,72 @@ export function AuditTrail({ currentUser }: AuditTrailProps) {
             <button
               onClick={handleRefresh}
               disabled={refreshing}
-              className="flex items-center gap-2 px-4 py-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600/40 hover:bg-blue-600/60 text-blue-200 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-blue-500/30"
               title="Refresh audit trail"
             >
               <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
               <span className="text-sm">Refresh</span>
             </button>
             <div className="text-right">
-              <div className="text-indigo-900">{events.length}</div>
-              <div className="text-indigo-600 text-sm">Total Events</div>
+              <div className="text-blue-100 font-bold">{events.length}</div>
+              <div className="text-blue-300 text-sm">Total Events</div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="bg-white/80 backdrop-blur-sm border border-indigo-200 rounded-xl p-4 shadow-sm">
+      {/* Search Bar */}
+      <div className="bg-slate-900/80 backdrop-blur-xl border border-blue-500/30 rounded-xl p-4 shadow-lg shadow-blue-500/20">
         <div className="flex items-center gap-3">
-          <span className="text-indigo-900">Filter:</span>
+          <Search className="w-5 h-5 text-blue-400 flex-shrink-0" />
+          <input
+            type="text"
+            placeholder="Search by file name, case number, user name, TX hash, or details..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="flex-1 bg-slate-800/60 border border-blue-500/30 rounded-lg px-4 py-2 text-blue-100 placeholder-blue-400/50 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="px-3 py-2 bg-blue-600/40 hover:bg-blue-600/60 text-blue-200 rounded-lg transition-colors text-sm"
+            >
+              Clear
+            </button>
+          )}
+        </div>
+        {searchQuery && (
+          <div className="mt-2 text-sm text-blue-300">
+            Found {events.length} result{events.length !== 1 ? 's' : ''} for "{searchQuery}"
+          </div>
+        )}
+      </div>
+
+      {/* Filters */}
+      <div className="bg-slate-900/80 backdrop-blur-xl border border-blue-500/30 rounded-xl p-4 shadow-lg shadow-blue-500/20">
+        <div className="flex items-center gap-3">
+          <span className="text-blue-100">Filter:</span>
           <div className="flex gap-2 flex-wrap">
-            {["all", "upload", "batch_upload", "share", "verify", "download"].map((filterType) => (
+            {["all", "upload", "batch_upload", "share", "batch_share", "verify", "tampered", "download"].map((filterType) => (
               <button
                 key={filterType}
                 onClick={() => setFilter(filterType)}
                 className={`px-4 py-2 rounded-lg text-sm transition-colors ${
                   filter === filterType
-                    ? "bg-indigo-600 text-white"
-                    : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
+                    ? filterType === "tampered"
+                      ? "bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg shadow-red-500/50"
+                      : "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg"
+                    : filterType === "tampered"
+                    ? "bg-red-900/40 text-red-200 hover:bg-red-800/60 border border-red-500/30"
+                    : "bg-blue-900/40 text-blue-200 hover:bg-blue-800/60 border border-blue-500/30"
                 }`}
               >
                 {filterType === "batch_upload" 
                   ? "Batch Uploads" 
+                  : filterType === "batch_share"
+                  ? "Batch Shares"
+                  : filterType === "tampered"
+                  ? "Tampered"
                   : filterType.charAt(0).toUpperCase() + filterType.slice(1)}
               </button>
             ))}
@@ -207,43 +296,53 @@ export function AuditTrail({ currentUser }: AuditTrailProps) {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white/80 backdrop-blur-sm border border-blue-200 rounded-xl p-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="bg-slate-900/80 backdrop-blur-xl border border-blue-500/30 rounded-xl p-4 shadow-lg shadow-blue-500/20">
           <div className="flex items-center gap-2 mb-2">
-            <Upload className="w-5 h-5 text-blue-600" />
-            <span className="text-blue-900">Uploads</span>
+            <Upload className="w-5 h-5 text-blue-400" />
+            <span className="text-blue-100">Uploads</span>
           </div>
-          <div className="text-blue-600 text-2xl">
+          <div className="text-blue-300 text-2xl font-bold drop-shadow-[0_0_10px_rgba(59,130,246,0.6)]">
             {events.filter((e) => e.eventType === "upload" || e.eventType === "batch_upload").length}
           </div>
         </div>
 
-        <div className="bg-white/80 backdrop-blur-sm border border-purple-200 rounded-xl p-4">
+        <div className="bg-slate-900/80 backdrop-blur-xl border border-purple-500/30 rounded-xl p-4 shadow-lg shadow-purple-500/20">
           <div className="flex items-center gap-2 mb-2">
-            <Share2 className="w-5 h-5 text-purple-600" />
-            <span className="text-purple-900">Shares</span>
+            <Share2 className="w-5 h-5 text-purple-400" />
+            <span className="text-purple-100">Shares</span>
           </div>
-          <div className="text-purple-600 text-2xl">
-            {events.filter((e) => e.eventType === "share").length}
+          <div className="text-purple-300 text-2xl font-bold drop-shadow-[0_0_10px_rgba(168,85,247,0.6)]">
+            {events.filter((e) => e.eventType === "share" || e.eventType === "batch_share").length}
           </div>
         </div>
 
-        <div className="bg-white/80 backdrop-blur-sm border border-green-200 rounded-xl p-4">
+        <div className="bg-slate-900/80 backdrop-blur-xl border border-green-500/30 rounded-xl p-4 shadow-lg shadow-green-500/20">
           <div className="flex items-center gap-2 mb-2">
-            <CheckCircle className="w-5 h-5 text-green-600" />
-            <span className="text-green-900">Verifications</span>
+            <CheckCircle className="w-5 h-5 text-green-400" />
+            <span className="text-green-100">Verifications</span>
           </div>
-          <div className="text-green-600 text-2xl">
+          <div className="text-green-300 text-2xl font-bold drop-shadow-[0_0_10px_rgba(34,197,94,0.6)]">
             {events.filter((e) => e.eventType === "verify").length}
           </div>
         </div>
 
-        <div className="bg-white/80 backdrop-blur-sm border border-indigo-200 rounded-xl p-4">
+        <div className="bg-slate-900/80 backdrop-blur-xl border border-red-500/30 rounded-xl p-4 shadow-lg shadow-red-500/20">
           <div className="flex items-center gap-2 mb-2">
-            <FileText className="w-5 h-5 text-indigo-600" />
-            <span className="text-indigo-900">Downloads</span>
+            <AlertCircle className="w-5 h-5 text-red-400" />
+            <span className="text-red-100">Tampered</span>
           </div>
-          <div className="text-indigo-600 text-2xl">
+          <div className="text-red-300 text-2xl font-bold drop-shadow-[0_0_10px_rgba(239,68,68,0.6)]">
+            {events.filter((e) => e.eventType === "verify" && (e.zkpVerified === false || e.details?.toLowerCase().includes('failed') || e.details?.toLowerCase().includes('tampered'))).length}
+          </div>
+        </div>
+
+        <div className="bg-slate-900/80 backdrop-blur-xl border border-indigo-500/30 rounded-xl p-4 shadow-lg shadow-indigo-500/20">
+          <div className="flex items-center gap-2 mb-2">
+            <FileText className="w-5 h-5 text-indigo-400" />
+            <span className="text-indigo-100">Downloads</span>
+          </div>
+          <div className="text-indigo-300 text-2xl font-bold drop-shadow-[0_0_10px_rgba(99,102,241,0.6)]">
             {events.filter((e) => e.eventType === "download").length}
           </div>
         </div>
@@ -251,10 +350,10 @@ export function AuditTrail({ currentUser }: AuditTrailProps) {
 
       {/* Events Timeline */}
       {events.length === 0 ? (
-        <div className="bg-white/80 backdrop-blur-sm border border-indigo-200 rounded-xl p-12 text-center">
-          <AlertCircle className="w-16 h-16 text-indigo-300 mx-auto mb-4" />
-          <h3 className="text-indigo-900 mb-2">No Audit Events</h3>
-          <p className="text-indigo-600">
+        <div className="bg-slate-900/80 backdrop-blur-xl border border-blue-500/30 rounded-xl p-12 text-center shadow-lg shadow-blue-500/20">
+          <AlertCircle className="w-16 h-16 text-blue-400 mx-auto mb-4" />
+          <h3 className="text-blue-100 mb-2">No Audit Events</h3>
+          <p className="text-blue-300">
             {filter === "all"
               ? "No activities have been recorded yet."
               : `No ${filter} activities found.`}
@@ -265,14 +364,14 @@ export function AuditTrail({ currentUser }: AuditTrailProps) {
           {events.map((event) => (
             <div
               key={event.id}
-              className={`bg-white/80 backdrop-blur-sm border rounded-xl p-5 shadow-sm ${getEventColor(
+              className={`backdrop-blur-xl border rounded-xl p-5 shadow-lg ${getEventColor(
                 event.eventType,
                 event
               )}`}
             >
               <div className="flex items-start gap-4">
                 {/* Icon */}
-                <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-white border border-gray-200 flex items-center justify-center">
+                <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-blue-900/40 border border-blue-500/30 flex items-center justify-center">
                   {getEventIcon(event.eventType, event)}
                 </div>
 
@@ -283,8 +382,8 @@ export function AuditTrail({ currentUser }: AuditTrailProps) {
                       <div className="flex items-center gap-2">
                         <h3 className={`${
                           event.eventType === "verify" && (event.zkpVerified === false || event.details?.toLowerCase().includes('failed'))
-                            ? 'text-red-900' 
-                            : 'text-indigo-900'
+                            ? 'text-red-300' 
+                            : 'text-blue-100'
                         }`}>
                           {getEventLabel(event.eventType, event)}
                         </h3>
@@ -298,8 +397,8 @@ export function AuditTrail({ currentUser }: AuditTrailProps) {
                           </span>
                         )}
                       </div>
-                      <p className="text-indigo-600 text-sm">
-                        {event.eventType === "batch_upload" 
+                      <p className="text-blue-300 text-sm">
+                        {event.eventType === "batch_upload" || event.eventType === "batch_share"
                           ? `${event.fileCount} files • Case: ${event.caseNumber}`
                           : `${event.fileName} • Case: ${event.caseNumber}`}
                       </p>
@@ -309,13 +408,13 @@ export function AuditTrail({ currentUser }: AuditTrailProps) {
                         </p>
                       )}
                     </div>
-                    <div className="text-right text-sm text-indigo-600">
+                    <div className="text-right text-sm text-blue-300">
                       {new Date(event.timestamp).toLocaleString()}
                     </div>
                   </div>
 
-                  <div className="text-sm text-indigo-700">
-                    <span className="text-indigo-600">
+                  <div className="text-sm text-blue-200">
+                    <span className="text-blue-300">
                       {event.eventType === "share" && event.details?.includes(`with: ${currentUser.email}`)
                         ? "Shared by:"
                         : "Performed by:"}
@@ -323,7 +422,7 @@ export function AuditTrail({ currentUser }: AuditTrailProps) {
                   </div>
 
                   {event.details && (
-                    <div className="text-sm text-indigo-700">
+                    <div className="text-sm text-blue-200">
                       {event.eventType === "share" && event.details?.includes(`with: ${currentUser.email}`)
                         ? `File shared from ${event.performerRole}`
                         : event.details}
@@ -367,15 +466,15 @@ export function AuditTrail({ currentUser }: AuditTrailProps) {
 
                   {/* Blockchain TX */}
                   <div className="flex items-center gap-2 text-sm">
-                    <span className="text-indigo-600">Blockchain TX:</span>
-                    <code className="text-indigo-900 bg-white px-2 py-1 rounded text-xs flex-1 truncate">
+                    <span className="text-blue-300">Blockchain TX:</span>
+                    <code className="text-blue-200 bg-slate-800/60 px-2 py-1 rounded text-xs flex-1 truncate border border-blue-500/30">
                       {event.txHash}
                     </code>
                     <a
                       href={`https://polygonscan.com/tx/${event.txHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
+                      className="text-blue-300 hover:text-blue-200 flex items-center gap-1"
                     >
                       <ExternalLink className="w-4 h-4" />
                       <span>View on Polygonscan</span>
@@ -416,7 +515,7 @@ export function AuditTrail({ currentUser }: AuditTrailProps) {
         <div className="bg-purple-50 border border-purple-200 rounded-xl p-4">
           <div className="flex items-start gap-3">
             <Shield className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
-            <div className="text-sm text-purple-900">
+            <div className="text-sm text-purple-200">
               <p className="mb-2 font-semibold">
                 Zero-Knowledge Proofs (ZKP)
               </p>

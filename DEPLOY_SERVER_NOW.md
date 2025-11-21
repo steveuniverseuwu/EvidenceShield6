@@ -76,7 +76,7 @@ supabase functions deploy make-server-af0976da
 curl https://qvxkthmxqsawrdaxukii.supabase.co/functions/v1/make-server-af0976da/health
 
 # Should return:
-# {"status":"ok","message":"EvidenceShield server running with chunked upload support"}
+# {"status":"ok","message":"ChainGuard server running with chunked upload support"}
 ```
 
 ---
@@ -115,7 +115,7 @@ curl https://qvxkthmxqsawrdaxukii.supabase.co/functions/v1/make-server-af0976da/
 # Should return:
 {
   "status": "ok",
-  "message": "EvidenceShield server running with chunked upload support"
+  "message": "ChainGuard server running with chunked upload support"
 }
 ```
 

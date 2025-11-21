@@ -41,32 +41,32 @@ export function Header({ currentUser, onLogout }: HeaderProps) {
   const headerContent = getHeaderContent();
 
   return (
-    <header className="bg-white/80 backdrop-blur-md border-b border-indigo-200 px-8 py-4 flex-shrink-0 shadow-sm">
+    <header className="bg-slate-900/80 backdrop-blur-xl border-b border-blue-500/30 px-8 py-4 flex-shrink-0 shadow-lg shadow-blue-500/10">
       <div className="flex items-center justify-between">
         {/* Left Section - Page Title */}
         <div>
-          <h1 className="text-indigo-900 text-xl mb-0.5">{headerContent.title}</h1>
-          <p className="text-indigo-600 text-sm">{headerContent.subtitle}</p>
+          <h1 className="text-blue-100 text-xl mb-0.5 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]">{headerContent.title}</h1>
+          <p className="text-blue-300 text-sm">{headerContent.subtitle}</p>
         </div>
 
         {/* Right Section - Live Session, User Info, Sign Out */}
         <div className="flex items-center gap-6">
           {/* Live Session Badge */}
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-300 rounded-full">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-green-700 text-sm uppercase tracking-wide">Live Session</span>
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500/20 border border-green-400/40 rounded-full backdrop-blur-sm">
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-[0_0_10px_rgba(74,222,128,1)]"></div>
+            <span className="text-green-300 text-sm uppercase tracking-wide font-semibold">Live Session</span>
           </div>
 
           {/* User Info */}
           <div className="text-right">
-            <div className="text-indigo-900 text-sm">{currentUser.name}</div>
-            <div className="text-indigo-600 text-xs">{currentUser.role} • {currentUser.department}</div>
+            <div className="text-blue-100 text-sm font-medium">{currentUser.name}</div>
+            <div className="text-blue-300 text-xs">{currentUser.role} • {currentUser.department}</div>
           </div>
 
           {/* Sign Out Button */}
           <button 
             onClick={onLogout}
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors flex items-center gap-2 shadow-sm"
+            className="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-lg transition-all flex items-center gap-2 shadow-lg shadow-blue-500/30 backdrop-blur-sm border border-blue-400/30"
           >
             <LogOut className="w-4 h-4" />
             Sign out

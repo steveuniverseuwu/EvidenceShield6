@@ -119,13 +119,13 @@ export function TamperDetectionDemo({ currentUser: _currentUser }: TamperDetecti
   const getSeverityColor = (severity: string) => {
     switch (severity) {
       case "critical":
-        return "text-red-600 bg-red-50 border-red-200";
+        return "text-red-300 bg-red-500/20 border-red-400/50";
       case "high":
-        return "text-orange-600 bg-orange-50 border-orange-200";
+        return "text-orange-300 bg-orange-500/20 border-orange-400/50";
       case "medium":
-        return "text-yellow-600 bg-yellow-50 border-yellow-200";
+        return "text-yellow-300 bg-yellow-500/20 border-yellow-400/50";
       default:
-        return "text-gray-600 bg-gray-50 border-gray-200";
+        return "text-blue-300 bg-slate-700/50 border-slate-600/50";
     }
   };
 
@@ -165,19 +165,19 @@ export function TamperDetectionDemo({ currentUser: _currentUser }: TamperDetecti
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center shadow-lg">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg">
               <Shield className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Tamper Detection Monitor</h1>
-              <p className="text-gray-600">Real-time evidence integrity monitoring (Demo Mode)</p>
+              <h1 className="text-3xl font-bold text-white">Tamper Detection Monitor</h1>
+              <p className="text-blue-300">Real-time evidence integrity monitoring (Demo Mode)</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <div className={`px-4 py-2 rounded-lg border-2 ${isMonitoring ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}>
+            <div className={`px-4 py-2 rounded-lg border-2 ${isMonitoring ? 'bg-green-500/20 border-green-400/50' : 'bg-slate-700/50 border-slate-500/50'}`}>
               <div className="flex items-center gap-2">
-                <div className={`w-3 h-3 rounded-full ${isMonitoring ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
-                <span className={`text-sm font-semibold ${isMonitoring ? 'text-green-700' : 'text-gray-600'}`}>
+                <div className={`w-3 h-3 rounded-full ${isMonitoring ? 'bg-green-400 animate-pulse' : 'bg-gray-400'}`}></div>
+                <span className={`text-sm font-semibold ${isMonitoring ? 'text-green-300' : 'text-gray-300'}`}>
                   {isMonitoring ? 'Monitoring Active' : 'Monitoring Paused'}
                 </span>
               </div>
@@ -194,10 +194,10 @@ export function TamperDetectionDemo({ currentUser: _currentUser }: TamperDetecti
             </button>
           </div>
         </div>
-        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg">
+        <div className="bg-yellow-900/30 border-l-4 border-yellow-500 p-4 rounded-lg backdrop-blur-sm">
           <div className="flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-yellow-600" />
-            <p className="text-yellow-800 text-sm">
+            <AlertTriangle className="w-5 h-5 text-yellow-400" />
+            <p className="text-yellow-200 text-sm">
               <strong>Demo Mode:</strong> This is a simulation of real-time tamper detection. Alerts are generated randomly and are not stored in the database. Refresh the page to reset.
             </p>
           </div>
@@ -206,58 +206,58 @@ export function TamperDetectionDemo({ currentUser: _currentUser }: TamperDetecti
 
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white rounded-xl p-6 shadow-md border-2 border-blue-100">
+        <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 shadow-md border-2 border-blue-500/30">
           <div className="flex items-center justify-between mb-2">
-            <div className="text-blue-600 text-sm font-semibold uppercase tracking-wide">Total Alerts</div>
-            <Activity className="w-5 h-5 text-blue-600" />
+            <div className="text-blue-400 text-sm font-semibold uppercase tracking-wide">Total Alerts</div>
+            <Activity className="w-5 h-5 text-blue-400" />
           </div>
-          <div className="text-3xl font-bold text-gray-900">{stats.totalAlerts}</div>
-          <div className="text-gray-500 text-sm mt-1">Since monitoring started</div>
+          <div className="text-3xl font-bold text-white">{stats.totalAlerts}</div>
+          <div className="text-blue-300 text-sm mt-1">Since monitoring started</div>
         </div>
 
-        <div className="bg-white rounded-xl p-6 shadow-md border-2 border-red-100">
+        <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 shadow-md border-2 border-red-500/30">
           <div className="flex items-center justify-between mb-2">
-            <div className="text-red-600 text-sm font-semibold uppercase tracking-wide">Critical</div>
-            <AlertTriangle className="w-5 h-5 text-red-600" />
+            <div className="text-red-400 text-sm font-semibold uppercase tracking-wide">Critical</div>
+            <AlertTriangle className="w-5 h-5 text-red-400" />
           </div>
-          <div className="text-3xl font-bold text-gray-900">{stats.critical}</div>
-          <div className="text-gray-500 text-sm mt-1">Require immediate action</div>
+          <div className="text-3xl font-bold text-white">{stats.critical}</div>
+          <div className="text-red-300 text-sm mt-1">Require immediate action</div>
         </div>
 
-        <div className="bg-white rounded-xl p-6 shadow-md border-2 border-green-100">
+        <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 shadow-md border-2 border-green-500/30">
           <div className="flex items-center justify-between mb-2">
-            <div className="text-green-600 text-sm font-semibold uppercase tracking-wide">Resolved</div>
-            <CheckCircle className="w-5 h-5 text-green-600" />
+            <div className="text-green-400 text-sm font-semibold uppercase tracking-wide">Resolved</div>
+            <CheckCircle className="w-5 h-5 text-green-400" />
           </div>
-          <div className="text-3xl font-bold text-gray-900">{stats.resolved}</div>
-          <div className="text-gray-500 text-sm mt-1">Threats mitigated</div>
+          <div className="text-3xl font-bold text-white">{stats.resolved}</div>
+          <div className="text-green-300 text-sm mt-1">Threats mitigated</div>
         </div>
 
-        <div className="bg-white rounded-xl p-6 shadow-md border-2 border-purple-100">
+        <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 shadow-md border-2 border-purple-500/30">
           <div className="flex items-center justify-between mb-2">
-            <div className="text-purple-600 text-sm font-semibold uppercase tracking-wide">Active</div>
-            <Shield className="w-5 h-5 text-purple-600" />
+            <div className="text-purple-400 text-sm font-semibold uppercase tracking-wide">Active</div>
+            <Shield className="w-5 h-5 text-purple-400" />
           </div>
-          <div className="text-3xl font-bold text-gray-900">{alerts.filter(a => a.status === 'active').length}</div>
-          <div className="text-gray-500 text-sm mt-1">Pending investigation</div>
+          <div className="text-3xl font-bold text-white">{alerts.filter(a => a.status === 'active').length}</div>
+          <div className="text-purple-300 text-sm mt-1">Pending investigation</div>
         </div>
       </div>
 
       {/* Alerts List */}
-      <div className="bg-white rounded-xl shadow-md border-2 border-gray-200">
-        <div className="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100">
-          <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-orange-600" />
+      <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl shadow-md border-2 border-slate-600/30">
+        <div className="px-6 py-4 border-b border-slate-600/30">
+          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+            <AlertTriangle className="w-5 h-5 text-orange-500" />
             Tamper Detection Alerts
           </h2>
         </div>
 
-        <div className="divide-y divide-gray-200 max-h-[600px] overflow-y-auto">
+        <div className="divide-y divide-slate-600/30 max-h-[600px] overflow-y-auto">
           {alerts.length === 0 ? (
             <div className="p-12 text-center">
-              <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-              <p className="text-gray-600 text-lg">No tamper alerts detected</p>
-              <p className="text-gray-400 text-sm mt-2">All evidence integrity checks passed</p>
+              <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-4" />
+              <p className="text-blue-200 text-lg">No tamper alerts detected</p>
+              <p className="text-blue-300/70 text-sm mt-2">All evidence integrity checks passed</p>
             </div>
           ) : (
             alerts.map((alert) => {
@@ -267,15 +267,15 @@ export function TamperDetectionDemo({ currentUser: _currentUser }: TamperDetecti
               return (
                 <div
                   key={alert.id}
-                  className={`p-6 hover:bg-gray-50 transition-colors ${isResolved ? 'opacity-60' : ''}`}
+                  className={`p-6 hover:bg-slate-700/30 transition-colors ${isResolved ? 'opacity-60' : ''}`}
                 >
                   <div className="flex items-start gap-4">
                     {/* Icon */}
                     <div className={`w-12 h-12 rounded-lg flex items-center justify-center border-2 flex-shrink-0 ${
-                      isResolved ? 'bg-green-50 border-green-200' : getSeverityColor(alert.severity)
+                      isResolved ? 'bg-green-500/20 border-green-400/50' : getSeverityColor(alert.severity)
                     }`}>
                       {isResolved ? (
-                        <CheckCircle className="w-6 h-6 text-green-600" />
+                        <CheckCircle className="w-6 h-6 text-green-400" />
                       ) : (
                         <TypeIcon className="w-6 h-6" />
                       )}
@@ -287,59 +287,59 @@ export function TamperDetectionDemo({ currentUser: _currentUser }: TamperDetecti
                         <div>
                           <div className="flex items-center gap-2 mb-1">
                             <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${
-                              isResolved ? 'bg-green-100 text-green-700' : getSeverityColor(alert.severity)
+                              isResolved ? 'bg-green-500/20 text-green-300 border border-green-400/50' : getSeverityColor(alert.severity)
                             }`}>
                               {isResolved ? 'Resolved' : alert.severity}
                             </span>
-                            <span className="px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-700 uppercase">
+                            <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-700/50 text-blue-300 border border-slate-600/50 uppercase">
                               {getTypeLabel(alert.type)}
                             </span>
                           </div>
-                          <p className="text-gray-900 font-semibold text-lg">{alert.description}</p>
+                          <p className="text-white font-semibold text-lg">{alert.description}</p>
                         </div>
                         <div className="text-right flex-shrink-0">
-                          <div className="text-gray-500 text-sm">
+                          <div className="text-blue-300 text-sm">
                             {alert.timestamp.toLocaleTimeString()}
                           </div>
-                          <div className="text-gray-400 text-xs">
+                          <div className="text-blue-400/70 text-xs">
                             {alert.timestamp.toLocaleDateString()}
                           </div>
                         </div>
                       </div>
 
                       {/* Details Grid */}
-                      <div className="grid grid-cols-2 gap-4 mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                      <div className="grid grid-cols-2 gap-4 mt-4 p-4 bg-slate-900/50 rounded-lg border border-slate-600/30">
                         {alert.fileName && (
                           <div>
-                            <div className="text-gray-500 text-xs uppercase tracking-wide mb-1">File Name</div>
-                            <div className="text-gray-900 font-medium flex items-center gap-1">
-                              <FileText className="w-4 h-4 text-gray-400" />
+                            <div className="text-blue-400/70 text-xs uppercase tracking-wide mb-1">File Name</div>
+                            <div className="text-white font-medium flex items-center gap-1">
+                              <FileText className="w-4 h-4 text-blue-400" />
                               {alert.fileName}
                             </div>
                           </div>
                         )}
                         {alert.caseNumber && (
                           <div>
-                            <div className="text-gray-500 text-xs uppercase tracking-wide mb-1">Case Number</div>
-                            <div className="text-gray-900 font-medium">{alert.caseNumber}</div>
+                            <div className="text-blue-400/70 text-xs uppercase tracking-wide mb-1">Case Number</div>
+                            <div className="text-white font-medium">{alert.caseNumber}</div>
                           </div>
                         )}
                         {alert.actor && (
                           <div>
-                            <div className="text-gray-500 text-xs uppercase tracking-wide mb-1">Suspicious Actor</div>
-                            <div className="text-red-600 font-medium">{alert.actor}</div>
+                            <div className="text-blue-400/70 text-xs uppercase tracking-wide mb-1">Suspicious Actor</div>
+                            <div className="text-red-400 font-medium">{alert.actor}</div>
                           </div>
                         )}
                         {alert.originalHash && (
                           <div>
-                            <div className="text-gray-500 text-xs uppercase tracking-wide mb-1">Original Hash</div>
-                            <div className="text-gray-900 font-mono text-xs">{alert.originalHash}</div>
+                            <div className="text-blue-400/70 text-xs uppercase tracking-wide mb-1">Original Hash</div>
+                            <div className="text-blue-200 font-mono text-xs">{alert.originalHash}</div>
                           </div>
                         )}
                         {alert.newHash && (
                           <div>
-                            <div className="text-gray-500 text-xs uppercase tracking-wide mb-1">New Hash</div>
-                            <div className="text-red-600 font-mono text-xs">{alert.newHash}</div>
+                            <div className="text-blue-400/70 text-xs uppercase tracking-wide mb-1">New Hash</div>
+                            <div className="text-red-400 font-mono text-xs">{alert.newHash}</div>
                           </div>
                         )}
                       </div>

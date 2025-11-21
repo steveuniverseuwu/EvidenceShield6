@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { Shield, LogIn, Lock, Mail, Copy, Check } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Shield, LogIn, Lock, Mail, Copy, Check, Activity, Eye } from "lucide-react";
+import { motion } from "motion/react";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
@@ -10,10 +11,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
+import { BlockchainBackground } from "./BlockchainBackground";
 
 interface LoginPageProps {
   onLogin: (email: string, password: string) => void;
   error: string | null;
+  onViewPublicAuditTrail?: () => void;
 }
 
 const demoAccounts = [
@@ -99,12 +102,19 @@ const demoAccounts = [
   },
 ];
 
-export function LoginPage({ onLogin, error }: LoginPageProps) {
+export function LoginPage({ onLogin, error, onViewPublicAuditTrail }: LoginPageProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [showDemoAccounts, setShowDemoAccounts] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
+  const [showContent, setShowContent] = useState(false);
+
+  // Trigger content to show after component mounts
+  useEffect(() => {
+    const timer = setTimeout(() => setShowContent(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -152,74 +162,142 @@ export function LoginPage({ onLogin, error }: LoginPageProps) {
   };
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left Side - Login Form */}
-      <div className="w-full lg:w-1/2 bg-white flex flex-col">
-        <div className="flex-1 flex items-center justify-center px-8 sm:px-12 lg:px-16">
-          <div className="w-full max-w-md">
-            {/* Logo */}
-            <div className="flex items-center justify-center gap-3 mb-8">
-              <div className="flex items-center justify-center w-16 h-16 rounded-xl bg-indigo-600 shadow-lg">
-                <Shield className="w-9 h-9 text-white" />
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Animated Blockchain Background */}
+      <BlockchainBackground />
+      
+      {/* Centered Login Container */}
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
+        {/* Public Audit Trail Button - Left Side */}
+        {onViewPublicAuditTrail && (
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="hidden lg:block absolute left-8 top-1/2 -translate-y-1/2"
+          >
+            <button
+              onClick={onViewPublicAuditTrail}
+              className="group bg-slate-900/80 backdrop-blur-xl border border-blue-500/30 rounded-xl p-6 shadow-[0_0_30px_rgba(59,130,246,0.2)] hover:shadow-[0_0_40px_rgba(59,130,246,0.4)] transition-all hover:border-blue-400/50"
+            >
+              <div className="flex flex-col items-center gap-4 text-center max-w-[200px]">
+                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center shadow-lg shadow-blue-500/50 group-hover:shadow-blue-500/70 transition-all group-hover:scale-110">
+                  <Activity className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-blue-100 font-semibold mb-1 flex items-center gap-2 justify-center">
+                    <Eye className="w-4 h-4" />
+                    Public Audit Trail
+                  </h3>
+                  <p className="text-blue-300 text-xs leading-relaxed">
+                    View all blockchain activities for transparency
+                  </p>
+                </div>
+                <div className="text-blue-400 text-xs font-medium group-hover:text-blue-300 transition-colors">
+                  Click to view →
+                </div>
               </div>
-              <span className="text-gray-900 text-2xl">EvidenceShield</span>
+            </button>
+          </motion.div>
+        )}
+
+        <div className="w-full max-w-md">
+          {/* Glass morphism container */}
+          <div className="bg-slate-900/80 backdrop-blur-xl border border-blue-500/30 rounded-2xl shadow-[0_0_50px_rgba(59,130,246,0.3)] p-6 sm:p-8">
+            {/* Logo */}
+            <div className="flex flex-col items-center justify-center gap-3 mb-6">
+              <motion.img 
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                src="/CYBERCRIME.png" 
+                alt="ChainGuard Logo" 
+                className="w-24 h-24 object-contain drop-shadow-[0_0_20px_rgba(59,130,246,0.5)]" 
+              />
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
+                className="text-center"
+              >
+                <h1 className="text-white text-2xl font-bold mb-1">ChainGuard</h1>
+                <p className="text-blue-300 text-xs">Digital Evidence Management</p>
+              </motion.div>
             </div>
 
             {/* Login Heading */}
-            <h1 className="text-gray-900 mb-2">Login</h1>
+            <motion.h2 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="text-white text-lg font-semibold mb-1 text-center"
+            >
+              Welcome Back
+            </motion.h2>
             
             {/* Demo Credentials Link */}
-            <p className="text-gray-600 text-sm mb-6">
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+              className="text-blue-200 text-xs mb-5 text-center"
+            >
               Don't have credentials?{" "}
               <button
                 type="button"
                 onClick={() => setShowDemoAccounts(true)}
-                className="text-indigo-600 hover:text-indigo-700 hover:underline"
+                className="text-blue-400 hover:text-blue-300 hover:underline font-medium"
               >
                 View Demo Accounts
               </button>
-            </p>
+            </motion.p>
 
             {/* Error Message */}
             {error && (
-              <div className="mb-6 bg-red-50 border border-red-200 rounded-md p-3 text-red-700 text-sm">
+              <div className="mb-4 bg-red-900/50 border border-red-500/50 rounded-lg p-3 text-red-200 text-sm backdrop-blur-sm">
                 {error}
               </div>
             )}
 
             {/* Login Form */}
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <motion.form 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+              onSubmit={handleSubmit} 
+              className="space-y-4"
+            >
               <div>
-                <Label htmlFor="email" className="text-gray-700 text-sm mb-2 block">
+                <Label htmlFor="email" className="text-blue-200 text-xs mb-1.5 block">
                   Email Address
                 </Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400" />
                   <Input
                     id="email"
                     type="email"
                     placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="h-12 pl-11 bg-white border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                    className="h-10 pl-10 bg-slate-800/60 border-blue-500/30 text-white placeholder:text-blue-300/50 focus:border-blue-500 focus:ring-blue-500/50"
                     required
                   />
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="password" className="text-gray-700 text-sm mb-2 block">
+                <Label htmlFor="password" className="text-blue-200 text-xs mb-1.5 block">
                   Password
                 </Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400" />
                   <Input
                     id="password"
                     type="password"
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="h-12 pl-11 bg-white border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                    className="h-10 pl-10 bg-slate-800/60 border-blue-500/30 text-white placeholder:text-blue-300/50 focus:border-blue-500 focus:ring-blue-500/50"
                     required
                   />
                 </div>
@@ -232,9 +310,9 @@ export function LoginPage({ onLogin, error }: LoginPageProps) {
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                  className="w-4 h-4 text-blue-600 bg-slate-800/60 border-blue-500/30 rounded focus:ring-blue-500"
                 />
-                <label htmlFor="remember" className="ml-2 text-sm text-gray-700">
+                <label htmlFor="remember" className="ml-2 text-xs text-blue-200">
                   Remember Me
                 </label>
               </div>
@@ -242,196 +320,38 @@ export function LoginPage({ onLogin, error }: LoginPageProps) {
               {/* Submit Button */}
               <Button
                 type="submit"
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white h-12 shadow-sm"
+                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white h-10 shadow-[0_0_20px_rgba(59,130,246,0.4)] hover:shadow-[0_0_30px_rgba(59,130,246,0.6)] transition-all"
               >
                 <LogIn className="w-4 h-4 mr-2" />
                 Log In
               </Button>
-            </form>
+            </motion.form>
 
             {/* Forgot Password */}
-            <div className="text-center mt-4">
-              <a href="#" className="text-sm text-indigo-600 hover:text-indigo-700 hover:underline">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.8 }}
+              className="text-center mt-4"
+            >
+              <a href="#" className="text-xs text-blue-400 hover:text-blue-300 hover:underline">
                 Forgot Your Password?
               </a>
-            </div>
+            </motion.div>
+
+            {/* Footer */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 1 }}
+              className="mt-6 pt-4 border-t border-blue-500/20"
+            >
+              <p className="text-xs text-blue-300/70 text-center">
+                Secure blockchain-powered evidence platform
+              </p>
+            </motion.div>
           </div>
         </div>
-
-        {/* Footer */}
-        <div className="px-8 sm:px-12 lg:px-16 py-6 border-t border-gray-200">
-          <p className="text-xs text-gray-500 text-center">
-            Copyright © 2025 EvidenceShield. EvidenceShield™ is a secure evidence management system. |{" "}
-            <a href="#" className="text-indigo-600 hover:underline">Terms of Service</a> |{" "}
-            <a href="#" className="text-indigo-600 hover:underline">Privacy Policy</a>
-          </p>
-        </div>
-      </div>
-
-      {/* Right Side - Illustration */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-indigo-900 via-indigo-800 to-purple-900 relative overflow-hidden">
-        {/* Stars */}
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-20 w-1 h-1 bg-white rounded-full animate-pulse"></div>
-          <div className="absolute top-40 left-40 w-1 h-1 bg-white rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
-          <div className="absolute top-32 right-32 w-1 h-1 bg-white rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
-          <div className="absolute top-60 right-60 w-1 h-1 bg-white rounded-full animate-pulse" style={{ animationDelay: '1.5s' }}></div>
-          <div className="absolute top-80 left-60 w-1 h-1 bg-white rounded-full animate-pulse" style={{ animationDelay: '2s' }}></div>
-          <div className="absolute bottom-60 right-40 w-1 h-1 bg-white rounded-full animate-pulse" style={{ animationDelay: '0.7s' }}></div>
-        </div>
-
-        {/* Clouds at top */}
-        <div className="absolute top-10 right-20">
-          <div className="w-24 h-16 bg-indigo-700/40 rounded-full blur-xl"></div>
-        </div>
-        <div className="absolute top-16 left-32">
-          <div className="w-32 h-20 bg-purple-700/40 rounded-full blur-xl"></div>
-        </div>
-
-        {/* Main Content Area */}
-        <div className="absolute inset-x-0 bottom-0 h-2/3">
-          {/* Mountains/Landscape - Left */}
-          <div className="absolute bottom-0 left-0 w-80 h-96">
-            <svg viewBox="0 0 320 384" className="w-full h-full">
-              <defs>
-                <linearGradient id="mountain1" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" style={{ stopColor: '#f59e0b', stopOpacity: 1 }} />
-                  <stop offset="50%" style={{ stopColor: '#ec4899', stopOpacity: 1 }} />
-                  <stop offset="100%" style={{ stopColor: '#8b5cf6', stopOpacity: 1 }} />
-                </linearGradient>
-              </defs>
-              <path d="M0,384 L0,200 L100,100 L200,180 L0,384 Z" fill="url(#mountain1)" />
-            </svg>
-          </div>
-
-          {/* Mountains/Landscape - Right */}
-          <div className="absolute bottom-0 right-0 w-96 h-80">
-            <svg viewBox="0 0 384 320" className="w-full h-full">
-              <defs>
-                <linearGradient id="mountain2" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" style={{ stopColor: '#fbbf24', stopOpacity: 1 }} />
-                  <stop offset="50%" style={{ stopColor: '#f97316', stopOpacity: 1 }} />
-                  <stop offset="100%" style={{ stopColor: '#a855f7', stopOpacity: 1 }} />
-                </linearGradient>
-              </defs>
-              <path d="M384,320 L384,150 L250,50 L150,120 L384,320 Z" fill="url(#mountain2)" />
-            </svg>
-          </div>
-
-          {/* Center Shield/Logo with Tagline */}
-          <div className="absolute inset-0 flex items-center justify-center z-10">
-            <div className="w-full flex flex-col items-center justify-center px-12 -mt-32">
-              {/* Multi-layer Glow effects */}
-              <div className="absolute -top-24 w-96 h-96 bg-indigo-500/30 rounded-full blur-[100px] animate-pulse pointer-events-none"></div>
-              <div className="absolute -top-20 w-80 h-80 bg-purple-500/20 rounded-full blur-[80px] animate-pulse pointer-events-none" style={{ animationDelay: '0.5s' }}></div>
-              
-              {/* Shield Container with Shadow */}
-              <div className="relative mb-12 flex items-center justify-center">
-                {/* Shield */}
-                <div className="relative w-40 h-40 bg-gradient-to-br from-indigo-400 via-indigo-500 to-indigo-600 rounded-3xl shadow-[0_20px_60px_rgba(99,102,241,0.5)] flex items-center justify-center transform hover:scale-110 transition-all duration-500 hover:shadow-[0_25px_80px_rgba(99,102,241,0.7)]">
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-3xl pointer-events-none"></div>
-                  <Shield className="w-20 h-20 text-white relative z-10 drop-shadow-lg" />
-                </div>
-
-                {/* Orbiting Lock */}
-                <div className="absolute -top-10 -right-10 w-20 h-20 bg-gradient-to-br from-cyan-400 via-cyan-500 to-blue-500 rounded-2xl shadow-[0_15px_40px_rgba(6,182,212,0.5)] flex items-center justify-center animate-float">
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-2xl pointer-events-none"></div>
-                  <Lock className="w-10 h-10 text-white relative z-10 drop-shadow-lg" />
-                </div>
-
-                {/* Decorative Rings */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-56 h-56 border-2 border-indigo-400/20 rounded-full animate-ping-slow pointer-events-none"></div>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 border-2 border-purple-400/10 rounded-full animate-ping-slower pointer-events-none"></div>
-              </div>
-
-              {/* Animated Tagline Section */}
-              <div className="flex flex-col items-center justify-center space-y-6 w-full">
-                {/* Main Heading */}
-                <div className="flex flex-col items-center justify-center text-center animate-fade-in-up w-full" style={{ animationDelay: '0.3s', opacity: 0, animationFillMode: 'forwards' }}>
-                  <h2 className="text-white text-[2.5rem] leading-[1.2] tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)] text-center">
-                    <span className="bg-gradient-to-r from-white via-indigo-100 to-white bg-clip-text text-transparent block text-center">
-                      Blockchain-Powered
-                    </span>
-                    <span className="bg-gradient-to-r from-white via-cyan-100 to-white bg-clip-text text-transparent block mt-1 text-center">
-                      Evidence
-                    </span>
-                  </h2>
-                </div>
-
-                {/* Subtitle */}
-                <div className="flex flex-col items-center justify-center text-center animate-fade-in-up space-y-1 w-full" style={{ animationDelay: '0.6s', opacity: 0, animationFillMode: 'forwards' }}>
-                  <p className="text-indigo-100 text-lg leading-[1.6] tracking-wide drop-shadow-md text-center w-full">
-                    Secure, Transparent, Immutable
-                  </p>
-                  <p className="text-indigo-200/90 text-base leading-[1.6] tracking-wide drop-shadow-md text-center w-full">
-                    Chain of Custody
-                  </p>
-                </div>
-
-                {/* Divider */}
-                <div className="flex items-center justify-center gap-3 py-2 animate-fade-in-up w-full" style={{ animationDelay: '0.9s', opacity: 0, animationFillMode: 'forwards' }}>
-                  <div className="h-px w-20 bg-gradient-to-r from-transparent via-indigo-300/60 to-transparent"></div>
-                  <div className="w-1.5 h-1.5 bg-indigo-300/80 rounded-full"></div>
-                  <div className="h-px w-20 bg-gradient-to-r from-transparent via-indigo-300/60 to-transparent"></div>
-                </div>
-
-                {/* Technology Badges */}
-                <div className="flex flex-wrap items-center justify-center gap-3 animate-fade-in-up pt-2 w-full" style={{ animationDelay: '1.2s', opacity: 0, animationFillMode: 'forwards' }}>
-                  {/* IPFS Badge */}
-                  <div className="group relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full blur opacity-40 group-hover:opacity-60 transition-opacity pointer-events-none"></div>
-                    <div className="relative flex items-center justify-center gap-2 px-4 py-2.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full hover:bg-white/15 transition-all duration-300 hover:scale-105 min-h-[40px]">
-                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.8)]"></div>
-                      <span className="text-white text-sm leading-none tracking-wide drop-shadow-md whitespace-nowrap">IPFS Storage</span>
-                    </div>
-                  </div>
-
-                  {/* Polygon Badge */}
-                  <div className="group relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full blur opacity-40 group-hover:opacity-60 transition-opacity pointer-events-none"></div>
-                    <div className="relative flex items-center justify-center gap-2 px-4 py-2.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full hover:bg-white/15 transition-all duration-300 hover:scale-105 min-h-[40px]">
-                      <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.8)]" style={{ animationDelay: '0.3s' }}></div>
-                      <span className="text-white text-sm leading-none tracking-wide drop-shadow-md whitespace-nowrap">Polygon Network</span>
-                    </div>
-                  </div>
-
-                  {/* Web3 Badge */}
-                  <div className="group relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full blur opacity-40 group-hover:opacity-60 transition-opacity pointer-events-none"></div>
-                    <div className="relative flex items-center justify-center gap-2 px-4 py-2.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full hover:bg-white/15 transition-all duration-300 hover:scale-105 min-h-[40px]">
-                      <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(192,132,252,0.8)]" style={{ animationDelay: '0.6s' }}></div>
-                      <span className="text-white text-sm leading-none tracking-wide drop-shadow-md whitespace-nowrap">Web3 Verified</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom Clouds */}
-          <div className="absolute bottom-0 left-1/4 -translate-x-1/2">
-            <svg viewBox="0 0 200 100" className="w-64 h-32">
-              <ellipse cx="60" cy="70" rx="60" ry="30" fill="white" opacity="0.95" />
-              <ellipse cx="100" cy="75" rx="70" ry="35" fill="white" opacity="0.95" />
-              <ellipse cx="140" cy="70" rx="60" ry="30" fill="white" opacity="0.95" />
-            </svg>
-          </div>
-
-          <div className="absolute bottom-0 right-1/4 translate-x-1/2">
-            <svg viewBox="0 0 200 100" className="w-64 h-32">
-              <ellipse cx="60" cy="70" rx="60" ry="30" fill="white" opacity="0.9" />
-              <ellipse cx="100" cy="75" rx="70" ry="35" fill="white" opacity="0.9" />
-              <ellipse cx="140" cy="70" rx="60" ry="30" fill="white" opacity="0.9" />
-            </svg>
-          </div>
-
-          {/* Purple cloud overlay layer */}
-          <div className="absolute bottom-12 left-1/3 w-48 h-24 bg-purple-600/30 rounded-full blur-2xl"></div>
-          <div className="absolute bottom-16 right-1/3 w-56 h-28 bg-indigo-600/30 rounded-full blur-2xl"></div>
-        </div>
-
-        {/* Bottom blue layer */}
-        <div className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-indigo-600 to-transparent"></div>
       </div>
 
       {/* Demo Accounts Modal */}

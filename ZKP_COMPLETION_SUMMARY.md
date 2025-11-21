@@ -1,7 +1,7 @@
 # ✅ ZKP Feature Completion Summary
 
 ## Overview
-Successfully completed the Zero-Knowledge Proof (ZKP) implementation for EvidenceShield. The feature is now fully functional and integrated throughout the application.
+Successfully completed the Zero-Knowledge Proof (ZKP) implementation for ChainGuard. The feature is now fully functional and integrated throughout the application.
 
 ## 🎉 What Was Completed
 
@@ -308,7 +308,7 @@ Server runs on: http://localhost:3000/
 
 ## 🎉 Conclusion
 
-The ZKP feature is now **fully implemented and functional** in EvidenceShield! 
+The ZKP feature is now **fully implemented and functional** in ChainGuard! 
 
 ### What Users Get
 - 🔐 Automatic cryptographic proof for all uploads

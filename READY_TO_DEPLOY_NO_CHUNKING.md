@@ -53,7 +53,7 @@ https://qvxkthmxqsawrdaxukii.supabase.co/functions/v1/make-server-af0976da/healt
 ```json
 {
   "status": "ok",
-  "message": "EvidenceShield server running - unlimited file size support"
+  "message": "ChainGuard server running - unlimited file size support"
 }
 ```
 
@@ -149,7 +149,7 @@ Should return:
 ```json
 {
   "status": "ok",
-  "message": "EvidenceShield server running - unlimited file size support"
+  "message": "ChainGuard server running - unlimited file size support"
 }
 ```
 

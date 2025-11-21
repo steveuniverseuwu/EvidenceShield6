@@ -1,4 +1,4 @@
-import { Users, Shield, Upload, FileCheck, Download, Share2, Activity, AlertTriangle } from "lucide-react";
+import { Users, Upload, FileCheck, Download, Share2, Activity, AlertTriangle } from "lucide-react";
 import { User } from "../App";
 
 interface SidebarProps {
@@ -42,7 +42,6 @@ export function Sidebar({ currentUser, currentPage, onNavigate }: SidebarProps) 
     if (role === "Prosecutor") {
       return [
         { id: "files", label: "Evidence Files", icon: FileCheck, description: "View & Verify" },
-        { id: "download", label: "Downloads", icon: Download, description: "Download Files" },
         { id: "audit", label: "Audit Trail", icon: Activity, description: "Blockchain Logs" },
       ];
     }
@@ -53,16 +52,14 @@ export function Sidebar({ currentUser, currentPage, onNavigate }: SidebarProps) 
   const navItems = getNavItems();
 
   return (
-    <div className="w-[280px] bg-gradient-to-b from-indigo-900 via-indigo-800 to-blue-900 border-r border-indigo-700/30 p-6 flex flex-col flex-shrink-0 shadow-2xl">
+    <div className="w-[280px] bg-gradient-to-b from-slate-900/95 via-blue-950/95 to-indigo-950/95 backdrop-blur-xl border-r border-blue-500/30 p-6 flex flex-col flex-shrink-0 shadow-2xl shadow-blue-500/20">
       {/* Logo Section */}
-      <div className="mb-8 pb-6 border-b border-indigo-700/30">
+      <div className="mb-8 pb-6">
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center shadow-lg">
-            <Shield className="w-7 h-7 text-white" />
-          </div>
+          <img src="/logo.png" alt="ChainGuard Logo" className="w-16 h-16 object-contain rounded-xl" />
           <div>
-            <h1 className="text-white text-xl">EvidenceShield</h1>
-            <div className="text-indigo-300 text-xs">Digital Evidence Management</div>
+            <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(59,130,246,0.8)]">ChainGuard</h1>
+            <div className="text-blue-300 text-xs tracking-wider font-medium">DIGITAL EVIDENCE MANAGEMENT</div>
           </div>
         </div>
       </div>
@@ -79,18 +76,18 @@ export function Sidebar({ currentUser, currentPage, onNavigate }: SidebarProps) 
               onClick={() => onNavigate(item.id)}
               className={`w-full group flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                 active
-                  ? "bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg shadow-indigo-900/50 border border-blue-400/20"
-                  : "hover:bg-white/5 border border-transparent"
+                  ? "bg-gradient-to-r from-blue-600/80 to-cyan-600/80 shadow-lg shadow-blue-500/40 border border-blue-400/60 backdrop-blur-sm"
+                  : "hover:bg-blue-500/10 hover:border-blue-500/30 border border-transparent backdrop-blur-sm"
               }`}
             >
               <div className={`w-10 h-10 rounded-lg flex items-center justify-center backdrop-blur-sm ${
-                active ? "bg-white/10" : "bg-white/5"
+                active ? "bg-white/20 shadow-[0_0_15px_rgba(59,130,246,0.6)]" : "bg-white/5"
               }`}>
                 <Icon className="w-5 h-5 text-white" />
               </div>
               <div className="flex-1 text-left">
                 <div className="text-white">{item.label}</div>
-                <div className={`text-xs ${active ? "text-blue-100" : "text-indigo-300"}`}>
+                <div className={`text-xs ${active ? "text-blue-100" : "text-blue-300"}`}>
                   {item.description}
                 </div>
               </div>
@@ -100,13 +97,13 @@ export function Sidebar({ currentUser, currentPage, onNavigate }: SidebarProps) 
       </nav>
 
       {/* Footer Badge */}
-      <div className="mt-6 pt-6 border-t border-indigo-700/30">
-        <div className="bg-gradient-to-r from-indigo-950/80 to-blue-950/80 rounded-xl p-4 border border-indigo-700/30">
+      <div className="mt-6 pt-6">
+        <div className="bg-black/60 backdrop-blur-md rounded-xl p-4 border border-blue-500/40 shadow-[0_0_20px_rgba(59,130,246,0.3)]">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            <span className="text-green-400 text-xs uppercase tracking-wider">System Online</span>
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-[0_0_10px_rgba(74,222,128,1)]"></div>
+            <span className="text-green-400 text-xs uppercase tracking-wider font-semibold drop-shadow-[0_0_8px_rgba(74,222,128,0.6)]">System Online</span>
           </div>
-          <p className="text-indigo-300 text-xs">Polygon Network Active</p>
+          <p className="text-blue-300 text-xs font-medium">Polygon Network Active</p>
         </div>
       </div>
     </div>

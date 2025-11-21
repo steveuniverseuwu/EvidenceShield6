@@ -2,7 +2,7 @@
 
 ## ✅ Mission Accomplished
 
-The **Zero-Knowledge Proof (ZKP)** feature has been **successfully completed and fully integrated** into EvidenceShield!
+The **Zero-Knowledge Proof (ZKP)** feature has been **successfully completed and fully integrated** into ChainGuard!
 
 ---
 
@@ -438,7 +438,7 @@ Want to enhance the ZKP implementation?
 
 ### Congratulations! 🎊
 
-You now have a **fully functional Zero-Knowledge Proof system** in EvidenceShield!
+You now have a **fully functional Zero-Knowledge Proof system** in ChainGuard!
 
 ### What Makes This Special
 
@@ -468,7 +468,7 @@ You now have a **fully functional Zero-Knowledge Proof system** in EvidenceShiel
 
 ---
 
-**Thank you for implementing Zero-Knowledge Proofs in EvidenceShield! 🔐🛡️**
+**Thank you for implementing Zero-Knowledge Proofs in ChainGuard! 🔐🛡️**
 
 *Implementation Date: 2025-01-16*  
 *Version: 1.0.0*  

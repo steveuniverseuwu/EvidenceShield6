@@ -1,4 +1,4 @@
-# ✅ Project Status - EvidenceShield
+# ✅ Project Status - ChainGuard
 
 **Last Updated**: 2024  
 **Status**: Consolidated & Ready for Development
@@ -7,7 +7,7 @@
 
 ## 🎯 Current State
 
-The EvidenceShield project has been **successfully consolidated** from a confusing dual-directory structure into a clean, standard Vite/React project.
+The ChainGuard project has been **successfully consolidated** from a confusing dual-directory structure into a clean, standard Vite/React project.
 
 ### What Was Done
 

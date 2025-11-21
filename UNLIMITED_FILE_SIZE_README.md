@@ -2,7 +2,7 @@
 
 ## 🎉 Welcome!
 
-**Congratulations!** Your EvidenceShield system now supports **unlimited file sizes** with robust chunked upload, streaming encryption, and automatic retry logic.
+**Congratulations!** Your ChainGuard system now supports **unlimited file sizes** with robust chunked upload, streaming encryption, and automatic retry logic.
 
 ---
 
@@ -450,7 +450,7 @@ npm run lint
 
 ---
 
-**Thank you for using EvidenceShield!** 🛡️
+**Thank you for using ChainGuard!** 🛡️
 
 Your evidence management system now supports unlimited file sizes with enterprise-grade security and reliability.
 

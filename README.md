@@ -1,5 +1,5 @@
 
-  # 🛡️ EvidenceShield
+  # 🛡️ ChainGuard
 
   A blockchain-based evidence management system with Zero-Knowledge Proof (ZKP) verification for secure and tamper-proof evidence handling.
 
@@ -55,5 +55,5 @@
 
   ## 🎨 Original Design
 
-  The original Figma design is available at: https://www.figma.com/design/xV6O7O7IfunZzOQUQVw3F5/EvidenceShield
+  The original Figma design is available at: https://www.figma.com/design/xV6O7O7IfunZzOQUQVw3F5/ChainGuard
   

@@ -394,6 +394,6 @@ Scenario 4: Browser Doesn't Support Crypto API
 
 ---
 
-**This diagram shows the complete Zero-Knowledge Proof implementation flow in EvidenceShield.**
+**This diagram shows the complete Zero-Knowledge Proof implementation flow in ChainGuard.**
 
 Last Updated: 2025-01-16

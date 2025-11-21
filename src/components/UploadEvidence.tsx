@@ -340,14 +340,14 @@ export function UploadEvidence({ currentUser }: UploadEvidenceProps) {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm border border-indigo-200 rounded-xl p-4 shadow-sm">
+      <div className="bg-slate-900/80 backdrop-blur-xl border border-blue-500/30 rounded-xl p-4 shadow-lg shadow-blue-500/20">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center flex-shrink-0 shadow-md">
+          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/50">
             <Upload className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h2 className="text-indigo-900">Upload Evidence</h2>
-            <p className="text-indigo-600 text-sm">
+            <h2 className="text-blue-100 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]">Upload Evidence</h2>
+            <p className="text-blue-300 text-sm">
               Upload single or multiple files - Batch uploads use Merkle tree for efficient blockchain storage
             </p>
           </div>
@@ -355,11 +355,11 @@ export function UploadEvidence({ currentUser }: UploadEvidenceProps) {
       </div>
 
       {/* Upload Form */}
-      <div className="bg-white/80 backdrop-blur-sm border border-indigo-200 rounded-xl p-6 shadow-sm">
+      <div className="bg-slate-900/80 backdrop-blur-xl border border-blue-500/30 rounded-xl p-6 shadow-lg shadow-blue-500/20">
         <form onSubmit={handleUpload} className="space-y-6">
           {/* Case Number */}
           <div>
-            <label className="block text-indigo-900 mb-2">
+            <label className="block text-blue-100 mb-2">
               Case Number <span className="text-red-500">*</span>
             </label>
             <input
@@ -367,14 +367,14 @@ export function UploadEvidence({ currentUser }: UploadEvidenceProps) {
               value={caseNumber}
               onChange={(e) => setCaseNumber(e.target.value)}
               placeholder="e.g., CASE-2025-001"
-              className="w-full px-4 py-3 border border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-4 py-3 bg-slate-800/60 border border-blue-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-blue-100 placeholder-blue-400"
               disabled={uploading}
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-indigo-900 mb-2">
+            <label className="block text-blue-100 mb-2">
               Evidence Description <span className="text-red-500">*</span>
             </label>
             <textarea
@@ -382,23 +382,23 @@ export function UploadEvidence({ currentUser }: UploadEvidenceProps) {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Describe the evidence, context, and any relevant details..."
               rows={4}
-              className="w-full px-4 py-3 border border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+              className="w-full px-4 py-3 bg-slate-800/60 border border-blue-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-blue-100 placeholder-blue-400"
               disabled={uploading}
             />
           </div>
 
           {/* File Upload */}
           <div>
-            <label className="block text-indigo-900 mb-2 flex items-center gap-2">
+            <label className="block text-blue-100 mb-2 flex items-center gap-2">
               Evidence Files <span className="text-red-500">*</span>
               {files.length > 1 && (
-                <span className="flex items-center gap-1.5 text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full">
+                <span className="flex items-center gap-1.5 text-xs bg-blue-600/40 text-blue-200 px-2 py-1 rounded-full border border-blue-500/30">
                   <GitMerge className="w-3 h-3" />
                   Merkle Tree Batch
                 </span>
               )}
             </label>
-            <div className="border-2 border-dashed border-indigo-300 rounded-xl p-6 hover:border-indigo-500 transition-colors">
+            <div className="border-2 border-dashed border-blue-500/40 rounded-xl p-6 hover:border-blue-500/60 transition-colors bg-slate-800/40">
               <input
                 id="file-input"
                 type="file"
@@ -413,12 +413,12 @@ export function UploadEvidence({ currentUser }: UploadEvidenceProps) {
                   htmlFor="file-input"
                   className="cursor-pointer flex flex-col items-center gap-3 py-4"
                 >
-                  <Upload className="w-12 h-12 text-indigo-400" />
-                  <div className="text-indigo-900">Click to select file(s)</div>
-                  <div className="text-indigo-600 text-sm text-center">
+                  <Upload className="w-12 h-12 text-blue-400" />
+                  <div className="text-blue-100">Click to select file(s)</div>
+                  <div className="text-blue-300 text-sm text-center">
                     Select single or multiple files (Unlimited size support)
                     <br />
-                    <span className="text-xs text-indigo-500 mt-1 inline-block">
+                    <span className="text-xs text-blue-400 mt-1 inline-block">
                       Multiple files will be grouped with Merkle tree for blockchain efficiency
                     </span>
                   </div>
@@ -430,13 +430,13 @@ export function UploadEvidence({ currentUser }: UploadEvidenceProps) {
                     {files.map((file, index) => (
                       <div
                         key={index}
-                        className="flex items-center justify-between gap-3 p-3 bg-indigo-50 border border-indigo-200 rounded-lg"
+                        className="flex items-center justify-between gap-3 p-3 bg-slate-800/60 border border-blue-500/30 rounded-lg"
                       >
                         <div className="flex items-center gap-3 flex-1 min-w-0">
-                          <FileText className="w-5 h-5 text-indigo-600 flex-shrink-0" />
+                          <FileText className="w-5 h-5 text-blue-400 flex-shrink-0" />
                           <div className="flex-1 min-w-0">
-                            <div className="text-indigo-900 text-sm truncate">{file.name}</div>
-                            <div className="text-xs text-indigo-600">
+                            <div className="text-blue-100 text-sm truncate">{file.name}</div>
+                            <div className="text-xs text-blue-300">
                               {(file.size / 1024 / 1024).toFixed(2)} MB
                             </div>
                           </div>
@@ -444,29 +444,29 @@ export function UploadEvidence({ currentUser }: UploadEvidenceProps) {
                         <button
                           type="button"
                           onClick={() => removeFile(index)}
-                          className="p-1.5 hover:bg-indigo-200 rounded-md transition-colors flex-shrink-0"
+                          className="p-1.5 hover:bg-red-500/20 rounded-md transition-colors flex-shrink-0"
                           title="Remove file"
                         >
-                          <X className="w-4 h-4 text-indigo-600" />
+                          <X className="w-4 h-4 text-red-400" />
                         </button>
                       </div>
                     ))}
                   </div>
                   
                   {/* Summary & Add More */}
-                  <div className="flex items-center justify-between pt-3 border-t border-indigo-200">
-                    <div className="text-sm text-indigo-700 flex items-center gap-2">
+                  <div className="flex items-center justify-between pt-3 border-t border-blue-500/30">
+                    <div className="text-sm text-blue-200 flex items-center gap-2">
                       <Files className="w-4 h-4" />
                       {files.length} file{files.length !== 1 ? 's' : ''} selected
                       {files.length > 1 && (
-                        <span className="text-indigo-500">
+                        <span className="text-blue-400">
                           ({(files.reduce((sum, f) => sum + f.size, 0) / 1024 / 1024).toFixed(2)} MB total)
                         </span>
                       )}
                     </div>
                     <label
                       htmlFor="file-input"
-                      className="text-sm text-indigo-600 hover:text-indigo-700 cursor-pointer underline"
+                      className="text-sm text-blue-300 hover:text-blue-200 cursor-pointer underline"
                     >
                       Add more files
                     </label>
@@ -554,7 +554,7 @@ export function UploadEvidence({ currentUser }: UploadEvidenceProps) {
           <button
             type="submit"
             disabled={uploading}
-            className="w-full px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+            className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/30 shadow-md"
           >
             {uploading ? (
               <>
@@ -573,42 +573,42 @@ export function UploadEvidence({ currentUser }: UploadEvidenceProps) {
 
       {/* Info Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white/80 backdrop-blur-sm border border-amber-200 rounded-xl p-4">
+        <div className="bg-slate-900/80 backdrop-blur-xl border border-amber-500/30 rounded-xl p-4 shadow-lg shadow-amber-500/20">
           <div className="flex items-center gap-3 mb-2">
-            <Lock className="w-5 h-5 text-amber-600" />
-            <h3 className="text-amber-900">AES-256 Encryption</h3>
+            <Lock className="w-5 h-5 text-amber-400" />
+            <h3 className="text-amber-100">AES-256 Encryption</h3>
           </div>
-          <p className="text-amber-700 text-sm">
+          <p className="text-amber-300 text-sm">
             Files encrypted before IPFS storage, auto-decrypt on download/verify
           </p>
         </div>
 
-        <div className="bg-white/80 backdrop-blur-sm border border-green-200 rounded-xl p-4">
+        <div className="bg-slate-900/80 backdrop-blur-xl border border-green-500/30 rounded-xl p-4 shadow-lg shadow-green-500/20">
           <div className="flex items-center gap-3 mb-2">
-            <FileText className="w-5 h-5 text-green-600" />
-            <h3 className="text-green-900">Real File Storage</h3>
+            <FileText className="w-5 h-5 text-green-400" />
+            <h3 className="text-green-100">Real File Storage</h3>
           </div>
-          <p className="text-green-700 text-sm">
+          <p className="text-green-300 text-sm">
             ✓ Encrypted files stored securely - Download to get decrypted original
           </p>
         </div>
 
-        <div className="bg-white/80 backdrop-blur-sm border border-purple-200 rounded-xl p-4">
+        <div className="bg-slate-900/80 backdrop-blur-xl border border-purple-500/30 rounded-xl p-4 shadow-lg shadow-purple-500/20">
           <div className="flex items-center gap-3 mb-2">
-            <GitMerge className="w-5 h-5 text-purple-600" />
-            <h3 className="text-purple-900">Merkle Tree Batching</h3>
+            <GitMerge className="w-5 h-5 text-purple-400" />
+            <h3 className="text-purple-100">Merkle Tree Batching</h3>
           </div>
-          <p className="text-purple-600 text-sm">
+          <p className="text-purple-300 text-sm">
             Multiple files grouped with Merkle tree for efficient blockchain storage
           </p>
         </div>
 
-        <div className="bg-white/80 backdrop-blur-sm border border-indigo-200 rounded-xl p-4">
+        <div className="bg-slate-900/80 backdrop-blur-xl border border-indigo-500/30 rounded-xl p-4 shadow-lg shadow-indigo-500/20">
           <div className="flex items-center gap-3 mb-2">
-            <Clock className="w-5 h-5 text-indigo-600" />
-            <h3 className="text-indigo-900">Blockchain Record</h3>
+            <Clock className="w-5 h-5 text-indigo-400" />
+            <h3 className="text-indigo-100">Blockchain Record</h3>
           </div>
-          <p className="text-indigo-600 text-sm">
+          <p className="text-indigo-300 text-sm">
             Mock IPFS CID and Polygon TX hash with SHA-256 file verification
           </p>
         </div>

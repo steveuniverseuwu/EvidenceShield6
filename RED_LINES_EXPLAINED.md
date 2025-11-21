@@ -80,7 +80,7 @@ Should return:
 ```json
 {
   "status": "ok",
-  "message": "EvidenceShield server running - unlimited file size support"
+  "message": "ChainGuard server running - unlimited file size support"
 }
 ```
 

@@ -2,7 +2,7 @@
 
 ## 📦 What's Included
 
-This package contains the **complete Zero-Knowledge Proof implementation** for EvidenceShield. Everything you need to understand, use, and extend the ZKP features.
+This package contains the **complete Zero-Knowledge Proof implementation** for ChainGuard. Everything you need to understand, use, and extend the ZKP features.
 
 ---
 
@@ -451,7 +451,7 @@ Object.keys(localStorage).filter(k => k.startsWith('zkp_proof_'))
 
 ## 🎉 Conclusion
 
-You now have a **complete, functional Zero-Knowledge Proof system** integrated into EvidenceShield!
+You now have a **complete, functional Zero-Knowledge Proof system** integrated into ChainGuard!
 
 ### What You Can Do Now
 - ✅ Upload files with automatic ZKP generation
@@ -469,7 +469,7 @@ You now have a **complete, functional Zero-Knowledge Proof system** integrated i
 
 ---
 
-**Thank you for using EvidenceShield ZKP! 🛡️**
+**Thank you for using ChainGuard ZKP! 🛡️**
 
 *Last Updated: 2025-01-16*  
 *Version: 1.0.0*  

@@ -2,7 +2,7 @@
 
 ## ✅ What Was Done
 
-I've successfully **completed the Zero-Knowledge Proof (ZKP) feature** for EvidenceShield and **fixed the browser compatibility issue** that was causing the white screen!
+I've successfully **completed the Zero-Knowledge Proof (ZKP) feature** for ChainGuard and **fixed the browser compatibility issue** that was causing the white screen!
 
 ---
 

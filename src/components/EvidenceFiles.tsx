@@ -283,8 +283,8 @@ export function EvidenceFiles({ currentUser }: EvidenceFilesProps) {
     return (
       <div className="p-6 flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 text-indigo-600 animate-spin mx-auto mb-4" />
-          <p className="text-indigo-600">Loading evidence files...</p>
+          <Loader2 className="w-12 h-12 text-blue-400 animate-spin mx-auto mb-4" />
+          <p className="text-blue-300">Loading evidence files...</p>
         </div>
       </div>
     );
@@ -293,48 +293,48 @@ export function EvidenceFiles({ currentUser }: EvidenceFilesProps) {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm border border-indigo-200 rounded-xl p-4 shadow-sm">
+      <div className="bg-slate-900/80 backdrop-blur-xl border border-blue-500/30 shadow-lg shadow-blue-500/20 rounded-xl p-4 shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center flex-shrink-0 shadow-md">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/50">
               <FileText className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h2 className="text-indigo-900">Evidence Files</h2>
-              <p className="text-indigo-600 text-sm">
+              <h2 className="text-blue-100">Evidence Files</h2>
+              <p className="text-blue-300 text-sm">
                 View, verify, and download evidence files
               </p>
             </div>
           </div>
           <div className="text-right">
-            <div className="text-indigo-900">{files.length}</div>
-            <div className="text-indigo-600 text-sm">Total Files • {caseNumbers.length} Cases</div>
+            <div className="text-blue-100">{files.length}</div>
+            <div className="text-blue-300 text-sm">Total Files • {caseNumbers.length} Cases</div>
           </div>
         </div>
       </div>
 
       {/* Search Bar */}
-      <div className="bg-white/80 backdrop-blur-sm border border-indigo-200 rounded-xl p-4 shadow-sm">
+      <div className="bg-slate-900/80 backdrop-blur-xl border border-blue-500/30 shadow-lg shadow-blue-500/20 rounded-xl p-4 shadow-sm">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-indigo-400" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-blue-400" />
           <input
             type="text"
             placeholder="Search by file name, case number, uploader, or description..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-10 py-2 border border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-indigo-900 placeholder-indigo-400"
+            className="w-full pl-10 pr-10 py-2 bg-slate-800/60 border border-blue-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-blue-100 placeholder-indigo-400"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-indigo-400 hover:text-indigo-600 transition-colors"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-400 hover:text-blue-300 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
           )}
         </div>
         {searchQuery && (
-          <div className="mt-2 text-sm text-indigo-600">
+          <div className="mt-2 text-sm text-blue-300">
             Found {filteredFiles.length} file{filteredFiles.length !== 1 ? 's' : ''} in {caseNumbers.length} case{caseNumbers.length !== 1 ? 's' : ''}
           </div>
         )}
@@ -342,20 +342,20 @@ export function EvidenceFiles({ currentUser }: EvidenceFilesProps) {
 
       {/* Files List Grouped by Case */}
       {files.length === 0 ? (
-        <div className="bg-white/80 backdrop-blur-sm border border-indigo-200 rounded-xl p-12 text-center">
-          <AlertCircle className="w-16 h-16 text-indigo-300 mx-auto mb-4" />
-          <h3 className="text-indigo-900 mb-2">No Evidence Files</h3>
-          <p className="text-indigo-600">
+        <div className="bg-slate-900/80 backdrop-blur-xl border border-blue-500/30 shadow-lg shadow-blue-500/20 rounded-xl p-12 text-center">
+          <AlertCircle className="w-16 h-16 text-blue-400 mx-auto mb-4" />
+          <h3 className="text-blue-100 mb-2">No Evidence Files</h3>
+          <p className="text-blue-300">
             {currentUser.role === "Prosecutor"
               ? "No files have been shared with you yet."
               : "Upload your first evidence file to get started."}
           </p>
         </div>
       ) : filteredFiles.length === 0 ? (
-        <div className="bg-white/80 backdrop-blur-sm border border-indigo-200 rounded-xl p-12 text-center">
-          <Search className="w-16 h-16 text-indigo-300 mx-auto mb-4" />
-          <h3 className="text-indigo-900 mb-2">No Results Found</h3>
-          <p className="text-indigo-600">
+        <div className="bg-slate-900/80 backdrop-blur-xl border border-blue-500/30 shadow-lg shadow-blue-500/20 rounded-xl p-12 text-center">
+          <Search className="w-16 h-16 text-blue-400 mx-auto mb-4" />
+          <h3 className="text-blue-100 mb-2">No Results Found</h3>
+          <p className="text-blue-300">
             No files match your search query "{searchQuery}". Try different keywords.
           </p>
         </div>
@@ -372,32 +372,32 @@ export function EvidenceFiles({ currentUser }: EvidenceFilesProps) {
                 onOpenChange={() => toggleCase(caseNumber)}
               >
                 {/* Case Folder Header */}
-                <div className="bg-white/80 backdrop-blur-sm border border-indigo-200 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                <div className="bg-slate-900/80 backdrop-blur-xl border border-blue-500/30 shadow-lg shadow-blue-500/20 rounded-xl shadow-sm hover:shadow-md transition-shadow">
                   <CollapsibleTrigger className="w-full">
                     <div className="flex items-center justify-between p-4 cursor-pointer group">
                       <div className="flex items-center gap-3">
                         {isOpen ? (
-                          <FolderOpen className="w-6 h-6 text-indigo-600" />
+                          <FolderOpen className="w-6 h-6 text-blue-300" />
                         ) : (
-                          <Folder className="w-6 h-6 text-indigo-600" />
+                          <Folder className="w-6 h-6 text-blue-300" />
                         )}
                         <div className="text-left">
-                          <h3 className="text-indigo-900 font-semibold">
+                          <h3 className="text-blue-100 font-semibold">
                             Case {caseNumber}
                           </h3>
-                          <p className="text-indigo-600 text-sm">
+                          <p className="text-blue-300 text-sm">
                             {caseFiles.length} file{caseFiles.length > 1 ? 's' : ''}
                           </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">
+                        <span className="text-sm text-blue-300 bg-blue-900/40 px-3 py-1 rounded-full">
                           {caseFiles.length} file{caseFiles.length > 1 ? 's' : ''}
                         </span>
                         {isOpen ? (
-                          <ChevronDown className="w-5 h-5 text-indigo-600 transition-transform" />
+                          <ChevronDown className="w-5 h-5 text-blue-300 transition-transform" />
                         ) : (
-                          <ChevronRight className="w-5 h-5 text-indigo-600 transition-transform" />
+                          <ChevronRight className="w-5 h-5 text-blue-300 transition-transform" />
                         )}
                       </div>
                     </div>
@@ -409,76 +409,76 @@ export function EvidenceFiles({ currentUser }: EvidenceFilesProps) {
                       {caseFiles.map((file) => (
             <div
               key={file.id}
-              className="bg-white/80 backdrop-blur-sm border border-indigo-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow"
+              className="bg-slate-900/80 backdrop-blur-xl border border-blue-500/30 shadow-lg shadow-blue-500/20 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex items-start justify-between gap-4">
                 {/* File Info */}
                 <div className="flex-1 space-y-3">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-indigo-100 to-blue-100 flex items-center justify-center flex-shrink-0">
-                      <FileText className="w-6 h-6 text-indigo-600" />
+                      <FileText className="w-6 h-6 text-blue-300" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-indigo-900">{file.fileName}</h3>
-                      <p className="text-indigo-600 text-sm">
+                      <h3 className="text-blue-100">{file.fileName}</h3>
+                      <p className="text-blue-300 text-sm">
                         Case: {file.caseNumber} • {(file.fileSize / 1024 / 1024).toFixed(2)} MB
                       </p>
                     </div>
                   </div>
 
-                  <p className="text-indigo-700">{file.description}</p>
+                  <p className="text-blue-200">{file.description}</p>
 
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <span className="text-indigo-600">Uploaded by:</span>{" "}
-                      <span className="text-indigo-900">{file.uploaderName}</span>
+                      <span className="text-blue-300">Uploaded by:</span>{" "}
+                      <span className="text-blue-100">{file.uploaderName}</span>
                     </div>
                     <div>
-                      <span className="text-indigo-600">Role:</span>{" "}
-                      <span className="text-indigo-900">{file.uploaderRole}</span>
+                      <span className="text-blue-300">Role:</span>{" "}
+                      <span className="text-blue-100">{file.uploaderRole}</span>
                     </div>
                     <div>
-                      <span className="text-indigo-600">Department:</span>{" "}
-                      <span className="text-indigo-900">{file.department}</span>
+                      <span className="text-blue-300">Department:</span>{" "}
+                      <span className="text-blue-100">{file.department}</span>
                     </div>
                     <div>
-                      <span className="text-indigo-600">Date:</span>{" "}
-                      <span className="text-indigo-900">
+                      <span className="text-blue-300">Date:</span>{" "}
+                      <span className="text-blue-100">
                         {new Date(file.timestamp).toLocaleString()}
                       </span>
                     </div>
                   </div>
 
                   {/* Blockchain Info */}
-                  <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-3 space-y-2">
+                  <div className="bg-blue-900/40 bg-slate-800/60 border border-blue-500/30 rounded-lg p-3 space-y-2">
                     <div className="flex items-center gap-2 text-sm">
-                      <span className="text-indigo-600">IPFS CID (Demo):</span>
-                      <code className="text-indigo-900 bg-white px-2 py-1 rounded text-xs flex-1 truncate">
+                      <span className="text-blue-300">IPFS CID (Demo):</span>
+                      <code className="text-blue-100 bg-slate-800/60 px-2 py-1 rounded text-xs flex-1 truncate border border-blue-500/30">
                         {file.ipfsCid}
                       </code>
-                      <span className="text-indigo-500 text-xs">Mock CID</span>
+                      <span className="text-blue-400 text-xs">Mock CID</span>
                     </div>
                     {file.merkleRoot && (
-                      <div className="flex items-center gap-2 text-sm bg-purple-50 -mx-4 px-4 py-2">
-                        <span className="text-purple-700">🌳 Merkle Root:</span>
-                        <code className="text-purple-900 bg-white px-2 py-1 rounded text-xs flex-1 truncate">
+                      <div className="flex items-center gap-2 text-sm bg-purple-900/40 -mx-4 px-4 py-2">
+                        <span className="text-purple-300">🌳 Merkle Root:</span>
+                        <code className="text-purple-100 bg-slate-800/60 px-2 py-1 rounded text-xs flex-1 truncate border border-purple-500/30">
                           {file.merkleRoot}
                         </code>
-                        <span className="text-purple-600 text-xs">
+                        <span className="text-purple-300 text-xs">
                           Batch #{file.batchIndex !== undefined ? file.batchIndex + 1 : '?'}
                         </span>
                       </div>
                     )}
                     <div className="flex items-center gap-2 text-sm">
-                      <span className="text-indigo-600">TX Hash (Demo):</span>
-                      <code className="text-indigo-900 bg-white px-2 py-1 rounded text-xs flex-1 truncate">
+                      <span className="text-blue-300">TX Hash (Demo):</span>
+                      <code className="text-blue-100 bg-slate-800/60 px-2 py-1 rounded text-xs flex-1 truncate border border-blue-500/30">
                         {file.txHash}
                       </code>
                       <a
                         href={`https://polygonscan.com/tx/${file.txHash}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-indigo-600 hover:text-indigo-700"
+                        className="text-blue-300 hover:text-blue-200"
                         title="Mock transaction - won't exist on Polygonscan"
                       >
                         <ExternalLink className="w-4 h-4" />

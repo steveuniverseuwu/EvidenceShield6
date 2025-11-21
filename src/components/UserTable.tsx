@@ -456,7 +456,7 @@ export function UserTable({ currentUser }: UserTableProps) {
   const configMissing = !projectId || !publicAnonKey;
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 bg-transparent">
       {/* Configuration Error Message */}
       {configMissing && (
         <div className="bg-red-50 border-2 border-red-300 text-red-900 px-6 py-4 rounded-lg animate-pulse">
@@ -506,15 +506,15 @@ export function UserTable({ currentUser }: UserTableProps) {
       )}
 
       {/* Section Header with Create Button */}
-      <div className="bg-white/80 backdrop-blur-sm border border-indigo-200 rounded-xl p-4 shadow-sm">
+      <div className="bg-slate-900/80 backdrop-blur-xl border border-blue-500/30 rounded-xl p-4 shadow-lg shadow-blue-500/20">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center flex-shrink-0 shadow-md">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/50">
               <UserIcon className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h2 className="text-indigo-900">{pageTitle.title}</h2>
-              <p className="text-indigo-600 text-sm">
+              <h2 className="text-blue-100 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]">{pageTitle.title}</h2>
+              <p className="text-blue-300 text-sm">
                 {pageTitle.subtitle}
               </p>
             </div>
@@ -541,7 +541,7 @@ export function UserTable({ currentUser }: UserTableProps) {
                   });
                   setShowCreateDialog(true);
                 }}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors flex items-center gap-2 shadow-sm"
+                className="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-lg transition-all flex items-center gap-2 shadow-lg shadow-blue-500/30 backdrop-blur-sm border border-blue-400/30"
               >
                 <Plus className="w-4 h-4" />
                 Create New User
@@ -556,10 +556,10 @@ export function UserTable({ currentUser }: UserTableProps) {
         {stats.map((stat, index) => (
           <div
             key={index}
-            className="bg-white/80 backdrop-blur-sm border border-indigo-200 rounded-xl p-4 text-center shadow-sm hover:shadow-md transition-shadow"
+            className="bg-slate-900/80 backdrop-blur-xl border border-blue-500/30 rounded-xl p-4 text-center shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition-shadow"
           >
-            <div className="text-indigo-600 text-3xl mb-1">{stat.value}</div>
-            <div className="text-indigo-500 text-xs uppercase tracking-wider">
+            <div className="text-blue-100 text-3xl mb-1 font-bold drop-shadow-[0_0_10px_rgba(59,130,246,0.6)]">{stat.value}</div>
+            <div className="text-blue-300 text-xs uppercase tracking-wider">
               {stat.label}
             </div>
           </div>
@@ -567,43 +567,43 @@ export function UserTable({ currentUser }: UserTableProps) {
       </div>
 
       {/* Table */}
-      <div className="bg-white/80 backdrop-blur-sm border border-indigo-200 rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-slate-900/80 backdrop-blur-xl border border-blue-500/30 rounded-xl overflow-hidden shadow-lg shadow-blue-500/20">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-indigo-200">
-                <th className="text-left px-6 py-4 bg-gradient-to-r from-indigo-50 to-blue-50">
-                  <div className="flex items-center gap-2 text-indigo-700 text-sm uppercase tracking-wider">
+              <tr className="border-b border-blue-500/30">
+                <th className="text-left px-6 py-4 bg-gradient-to-r from-blue-950/60 to-indigo-950/60">
+                  <div className="flex items-center gap-2 text-blue-300 text-sm uppercase tracking-wider">
                     <UserIcon className="w-4 h-4" />
                     Name
                   </div>
                 </th>
-                <th className="text-left px-6 py-4 bg-gradient-to-r from-indigo-50 to-blue-50">
-                  <div className="flex items-center gap-2 text-indigo-700 text-sm uppercase tracking-wider">
+                <th className="text-left px-6 py-4 bg-gradient-to-r from-blue-950/60 to-indigo-950/60">
+                  <div className="flex items-center gap-2 text-blue-300 text-sm uppercase tracking-wider">
                     <Mail className="w-4 h-4" />
                     Email
                   </div>
                 </th>
-                <th className="text-left px-6 py-4 bg-gradient-to-r from-indigo-50 to-blue-50">
-                  <div className="flex items-center gap-2 text-indigo-700 text-sm uppercase tracking-wider">
+                <th className="text-left px-6 py-4 bg-gradient-to-r from-blue-950/60 to-indigo-950/60">
+                  <div className="flex items-center gap-2 text-blue-300 text-sm uppercase tracking-wider">
                     <Briefcase className="w-4 h-4" />
                     Role
                   </div>
                 </th>
-                <th className="text-left px-6 py-4 bg-gradient-to-r from-indigo-50 to-blue-50">
-                  <div className="flex items-center gap-2 text-indigo-700 text-sm uppercase tracking-wider">
+                <th className="text-left px-6 py-4 bg-gradient-to-r from-blue-950/60 to-indigo-950/60">
+                  <div className="flex items-center gap-2 text-blue-300 text-sm uppercase tracking-wider">
                     <Building className="w-4 h-4" />
                     Department
                   </div>
                 </th>
-                <th className="text-left px-6 py-4 bg-gradient-to-r from-indigo-50 to-blue-50">
-                  <div className="text-indigo-700 text-sm uppercase tracking-wider">
+                <th className="text-left px-6 py-4 bg-gradient-to-r from-blue-950/60 to-indigo-950/60">
+                  <div className="text-blue-300 text-sm uppercase tracking-wider">
                     Badge ID
                   </div>
                 </th>
                 {currentUser.role === "Administrator" && (
-                  <th className="text-right px-6 py-4 bg-gradient-to-r from-indigo-50 to-blue-50">
-                    <div className="text-indigo-700 text-sm uppercase tracking-wider">
+                  <th className="text-right px-6 py-4 bg-gradient-to-r from-blue-950/60 to-indigo-950/60">
+                    <div className="text-blue-300 text-sm uppercase tracking-wider">
                       Actions
                     </div>
                   </th>
@@ -613,24 +613,24 @@ export function UserTable({ currentUser }: UserTableProps) {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center text-indigo-600">
+                  <td colSpan={6} className="px-6 py-8 text-center text-blue-300">
                     Loading users...
                   </td>
                 </tr>
               ) : users.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-6 py-8 text-center">
-                    <div className="text-indigo-600 mb-3">No users found in database</div>
+                    <div className="text-blue-300 mb-3">No users found in database</div>
                     <div className="flex gap-3 justify-center">
                       <button
                         onClick={fetchUsers}
-                        className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-colors"
+                        className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors shadow-lg"
                       >
                         Retry Loading
                       </button>
                       <button
                         onClick={initializeUsers}
-                        className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
+                        className="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-lg transition-colors shadow-lg"
                       >
                         Initialize 8 Demo Users
                       </button>
@@ -641,23 +641,23 @@ export function UserTable({ currentUser }: UserTableProps) {
                 users.map((user) => (
                   <tr
                     key={user.email}
-                    className="border-b border-indigo-100 hover:bg-indigo-50/50 transition-colors"
+                    className="border-b border-blue-500/20 hover:bg-blue-900/20 transition-colors"
                   >
                     {/* Name Column */}
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center flex-shrink-0 shadow-md">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/50">
                           <UserIcon className="w-5 h-5 text-white" />
                         </div>
                         <div className="min-w-0">
-                          <div className="text-indigo-900">{user.name}</div>
+                          <div className="text-blue-100">{user.name}</div>
                         </div>
                       </div>
                     </td>
 
                     {/* Email Column */}
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-2 text-indigo-600">
+                      <div className="flex items-center gap-2 text-blue-300">
                         <Mail className="w-4 h-4 flex-shrink-0" />
                         <span className="truncate">{user.email}</span>
                       </div>
@@ -675,16 +675,16 @@ export function UserTable({ currentUser }: UserTableProps) {
 
                     {/* Department Column */}
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-2 text-indigo-700">
-                        <Building className="w-4 h-4 flex-shrink-0 text-indigo-500" />
+                      <div className="flex items-center gap-2 text-blue-200">
+                        <Building className="w-4 h-4 flex-shrink-0 text-blue-400" />
                         <span>{user.department}</span>
                       </div>
                     </td>
 
                     {/* Badge ID Column */}
                     <td className="px-6 py-4">
-                      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-50 border border-indigo-200">
-                        <span className="text-indigo-700 text-sm">
+                      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-900/40 border border-blue-500/30 backdrop-blur-sm">
+                        <span className="text-blue-200 text-sm font-medium">
                           {user.badgeId}
                         </span>
                       </div>
@@ -730,7 +730,7 @@ export function UserTable({ currentUser }: UserTableProps) {
           <DialogHeader>
             <DialogTitle>Create New User</DialogTitle>
             <DialogDescription>
-              Add a new user to the EvidenceShield system. All fields are required.
+              Add a new user to the ChainGuard system. All fields are required.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">

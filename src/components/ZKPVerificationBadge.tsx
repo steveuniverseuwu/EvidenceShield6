@@ -399,13 +399,13 @@ export function ZKPVerificationBadge({
   }
 
   return (
-    <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 space-y-3">
+    <div className="bg-slate-900/60 border border-purple-500/30 rounded-lg p-4 space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Shield className="w-5 h-5 text-purple-600" />
+          <Shield className="w-5 h-5 text-purple-400" />
           <div>
-            <div className="text-purple-900 font-semibold">Zero-Knowledge Proof</div>
-            <div className="text-purple-700 text-xs">Cryptographic integrity proof</div>
+            <div className="text-purple-200 font-semibold">Zero-Knowledge Proof</div>
+            <div className="text-purple-300 text-xs">Cryptographic integrity proof</div>
           </div>
         </div>
         {verificationResult && (
@@ -423,16 +423,16 @@ export function ZKPVerificationBadge({
 
       <div className="space-y-2 text-sm">
         <div className="flex items-center gap-2">
-          <span className="text-purple-700">Proof ID:</span>
-          <code className="text-purple-900 bg-white px-2 py-1 rounded text-xs flex-1 truncate border border-purple-200">
+          <span className="text-purple-300">Proof ID:</span>
+          <code className="text-purple-100 bg-slate-800/60 px-2 py-1 rounded text-xs flex-1 truncate border border-purple-500/30">
             {zkpProofId}
           </code>
         </div>
 
         {fileHash && (
           <div className="flex items-center gap-2">
-            <span className="text-purple-700">File Hash:</span>
-            <code className="text-purple-900 bg-white px-2 py-1 rounded text-xs flex-1 truncate border border-purple-200">
+            <span className="text-purple-300">File Hash:</span>
+            <code className="text-purple-100 bg-slate-800/60 px-2 py-1 rounded text-xs flex-1 truncate border border-purple-500/30">
               {fileHash.substring(0, 16)}...{fileHash.substring(fileHash.length - 16)}
             </code>
           </div>
@@ -501,7 +501,7 @@ export function ZKPVerificationBadge({
         </div>
       )}
 
-      <div className="pt-3 border-t border-purple-200 text-xs text-purple-700">
+      <div className="pt-3 border-t border-purple-500/30 text-xs text-purple-300">
         <div className="flex items-start gap-2">
           <AlertCircle className="w-3 h-3 flex-shrink-0 mt-0.5" />
           <div>

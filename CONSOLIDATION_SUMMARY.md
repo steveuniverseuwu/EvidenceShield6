@@ -2,7 +2,7 @@
 
 ## What Was Done
 
-The EvidenceShield project had **duplicate configuration files** in both the root directory and the `src/` directory, causing confusion and potential conflicts. The project has been **successfully consolidated** into a single, clean structure.
+The ChainGuard project had **duplicate configuration files** in both the root directory and the `src/` directory, causing confusion and potential conflicts. The project has been **successfully consolidated** into a single, clean structure.
 
 ## Changes Made
 

@@ -1,6 +1,6 @@
-# Demo Credentials for EvidenceShield
+# Demo Credentials for ChainGuard
 
-This document contains all demo login credentials for testing the EvidenceShield system.
+This document contains all demo login credentials for testing the ChainGuard system.
 
 ## All Demo Users
 

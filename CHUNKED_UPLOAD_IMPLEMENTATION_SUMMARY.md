@@ -2,7 +2,7 @@
 
 ## 🎉 Summary
 
-EvidenceShield now supports **unlimited file sizes** through a robust chunked upload system with streaming encryption!
+ChainGuard now supports **unlimited file sizes** through a robust chunked upload system with streaming encryption!
 
 ## 📋 What Was Implemented
 
@@ -351,6 +351,6 @@ The chunked upload implementation is **complete and production-ready**!
 
 ---
 
-**Thank you for using EvidenceShield!** 🛡️
+**Thank you for using ChainGuard!** 🛡️
 
 Your evidence management system now supports unlimited file sizes with enterprise-grade security and reliability.

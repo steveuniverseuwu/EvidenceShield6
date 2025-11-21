@@ -2,7 +2,7 @@
 
 ## Overview
 
-EvidenceShield now supports **unlimited file sizes** through a robust chunked upload system. Files over 50MB are automatically processed using chunked upload with streaming encryption.
+ChainGuard now supports **unlimited file sizes** through a robust chunked upload system. Files over 50MB are automatically processed using chunked upload with streaming encryption.
 
 ## Features
 
